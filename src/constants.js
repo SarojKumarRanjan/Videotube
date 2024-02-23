@@ -3,3 +3,4 @@
 
 
 export const DB_NAME = "VideoFlix"
+export const LIMIT_DATA = "16kb"
