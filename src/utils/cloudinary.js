@@ -19,7 +19,7 @@ const cloudinaryHandler = async (localFilePath) => {
     });
 
     //file uploaded successfully
-    console.log("file uploaded success fully", response.url);
+    console.log("file uploaded successfully", response.url);
     return response;
   } catch (error) {
     fs.unlinkSync(localFilePath); // remvove the file from local storage as the file upload failed
