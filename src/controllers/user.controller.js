@@ -1,9 +1,10 @@
 import { asyncHandler } from "../utils/asyncHandler.js";
 import { ApiError } from "../utils/errorHandler.js";
 import { User } from "./../models/user.model.js";
-import { cloudinaryHandler } from "../utils/cloudinary.js";
+import { cloudinaryHandler, deleteOnCloudinary } from "../utils/cloudinary.js";
 import { ApiResponse } from "../utils/responseHandler.js";
 import jwt from "jsonwebtoken";
+import mongoose from "mongoose";
 
 const generateAccessTokenAndrefreshToken = async (userId) => {
   try {
@@ -153,8 +154,8 @@ const logoutUser = asyncHandler(async (req, res) => {
   await User.findByIdAndUpdate(
     req.user._id,
     {
-      $set: {
-        refreshToken: undefined,
+      $unset: {
+        refreshToken: 1,
       },
     },
     {
@@ -248,7 +249,7 @@ const changeCurrentPassword = asyncHandler(async (req, res) => {
 const getCurrentuser = asyncHandler(async (req, res) => {
   return res
     .status(200)
-    .json(200, req.user, "current user fetched successfully");
+    .json(new ApiResponse(200, req.user, "current user fetched successfully"));
 });
 
 const updateAccountDetails = asyncHandler(async (req, res) => {
@@ -288,6 +289,23 @@ const updateUserAvatar = asyncHandler(async (req, res) => {
     throw new ApiError(400, "Please provide avatar");
   }
 
+  const oldImage = req?.user?.avatar;
+  if (!oldImage) {
+    throw new ApiError(
+      400,
+      "error while finding the url for deleting the current avatar from cloudinary"
+    );
+  }
+
+ const deletedAvatar =  await deleteOnCloudinary(oldImage)
+
+ if (!deletedAvatar) {
+  throw new ApiError(
+    400,
+    "error while deleting the current avatar from cloudinary"
+  );
+ }
+
   const avatar = await cloudinaryHandler(avatarLocalPath);
 
   if (!avatar.url) {
@@ -317,6 +335,24 @@ const updateUserCoverImage = asyncHandler(async (req, res) => {
   if (!coverImageLocalPath) {
     throw new ApiError(400, "Please provide cover image");
   }
+
+  const oldImage = req?.user?.coverImage;
+  if (!oldImage) {
+    throw new ApiError(
+      400,
+      "error while finding the url for deleting the current coverImage from cloudinary"
+    );
+  }
+
+ const deletedcoverImage =  await deleteOnCloudinary(oldImage)
+
+ if (!deletedcoverImage) {
+  throw new ApiError(
+    400,
+    "error while deleting the current coverImage from cloudinary"
+  );
+ }
+
 
   const coverImage = await cloudinaryHandler(coverImageLocalPath);
 
@@ -381,7 +417,7 @@ const getUserChannelProfile = asyncHandler(async (req, res) => {
         subscribedToCount: { $size: "$subscribedTo" },
         isSubscribed: {
           $cond: {
-            if: { $in: [req.user?._id, "&subscribers.subscriber"] },
+            if: { $in: [req.user?._id, "$subscribers.subscriber"] },
             then: true,
             else: false,
           },
@@ -435,9 +471,11 @@ const getWatchHistory = asyncHandler(async (req, res) => {
               as: "owner",
               pipeline: [
                 {
-                  fullName: 1,
-                  userName: 1,
-                  avatar: 1,
+                  $project: {
+                    fullName: 1,
+                    userName: 1,
+                    avatar: 1,
+                  },
                 },
               ],
             },
@@ -455,12 +493,18 @@ const getWatchHistory = asyncHandler(async (req, res) => {
   ]);
 
   if (!user) {
-    throw new ApiError(401, "error in finding watch histry");
+    throw new ApiError(401, "error in finding watch history");
   }
 
   return res
     .status(200)
-    .json(new ApiResponse(200, user[0]?.watchHistory, "watch histry fetched sucessfully"));
+    .json(
+      new ApiResponse(
+        200,
+        user[0]?.watchHistory,
+        "watch history fetched sucessfully"
+      )
+    );
 });
 
 export {

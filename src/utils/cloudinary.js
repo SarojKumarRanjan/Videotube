@@ -30,4 +30,17 @@ const cloudinaryHandler = async (localFilePath) => {
   }
 };
 
-export { cloudinaryHandler };
+
+const deleteOnCloudinary = async(url,resource_type="image") => {
+  const publicId = `${url.split("/")[7]}/${url.split("/")[8].split(".")[0]}`
+  try {
+    const response = await cloudinary.uploader.destroy(publicId,{resource_type})
+    if(response) {
+      return response;
+    }
+  } catch (error) {
+    return null;
+  }
+}
+
+export { cloudinaryHandler,deleteOnCloudinary };
