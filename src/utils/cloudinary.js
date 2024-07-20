@@ -30,9 +30,23 @@ const cloudinaryHandler = async (localFilePath) => {
   }
 };
 
+function extractPublicId(url) {
+  // Split the URL by '/'
+  const parts = url.split('/');
+  
+  // Get the last part (filename with extension)
+  const filename = parts[parts.length - 1];
+  
+  // Split the filename by '.' and get the first part
+  const publicId = filename.split('.')[0];
+  
+  return publicId;
+}
+
+
 
 const deleteOnCloudinary = async(url,resource_type="image") => {
-  const publicId = `${url.split("/")[7]}/${url.split("/")[8].split(".")[0]}`
+  const publicId = extractPublicId(url)
   try {
     const response = await cloudinary.uploader.destroy(publicId,{resource_type})
     if(response) {
