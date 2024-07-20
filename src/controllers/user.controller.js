@@ -96,20 +96,26 @@ const loginUser = asyncHandler(async (req, res) => {
   //genrate tokens
   // if everything goes well return thr response by removing the password and resfresh token fields
   try {
-    const { email, userName, password } = req.body;
+    const {email, userName,  password } = req.body;
 
-    //console.log(email,password);
+    
     if (!userName && !email) {
       throw new ApiError(400, "email or userName is required");
     }
+
+    console.log(userName,password);
 
     const currentUser = await User.findOne({
       $or: [{ userName }, { email }],
     });
 
+    console.log(currentUser);
+
     if (!currentUser) {
       throw new ApiError(404, "user does not exist");
     }
+
+    
 
     const isPasswordValid = await currentUser.isPasswordCorrect(password);
 
@@ -127,7 +133,7 @@ const loginUser = asyncHandler(async (req, res) => {
 
     const options = {
       httpOnly: true,
-      secure: true,
+      
     };
 
     return res
@@ -164,7 +170,7 @@ const logoutUser = asyncHandler(async (req, res) => {
   );
   const options = {
     httpOnly: true,
-    secure: true,
+    
   };
 
   return res
