@@ -6,6 +6,11 @@ import {User} from "../models/user.model.js"
 
 export const verifyJWT = asyncHandler(async(req,_,next) => {
   try {
+
+    if (req.query?.guest === "true") {
+      req.user = null; // Set req.user to null for guest users
+      return next();
+    }
     const token =   req.cookies?.accessToken || req.header("Authorization")?.replace("Bearer ","")
     
     if (!token) {
