@@ -1,12 +1,14 @@
+import {HomePage} from "./pages/index"
 
-import { Button } from "./components/ui/button"
+
+
 
 function App() {
   
 
   return (
     <>
-      <Button>Click me</Button>
+     <HomePage/>
     </>
   )
 }
