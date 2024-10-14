@@ -16,7 +16,8 @@ import {
   Tweet,
   Playlist,
   Subscription,
-  Dashboard
+  Dashboard,
+  SinglevideoPage
 } from "./pages/index.ts"
 
 // eslint-disable-next-line react-refresh/only-export-components
@@ -75,6 +76,13 @@ const Router = createBrowserRouter([
         element:(
         <Authlayout auth={false}>
         <Dashboard/>
+        </Authlayout>)
+      },
+      {
+        path:'watch/:videoId',
+        element:(
+        <Authlayout auth={true}>
+        <SinglevideoPage/>
         </Authlayout>)
       }
     ]

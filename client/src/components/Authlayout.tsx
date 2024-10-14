@@ -1,5 +1,6 @@
 
 import { FC,ReactNode,useEffect } from "react"
+import GuestPage from "./GuestPage"
 
 
 interface AuthlayoutProps {
@@ -15,7 +16,7 @@ const Authlayout:FC<AuthlayoutProps> = ({children,auth}) => {
     }, [auth])
     return (
         <div>
-            {auth?children:<h1>Not Authenticated</h1>}
+            {auth?children:<GuestPage/>}
         </div>
     )
 }

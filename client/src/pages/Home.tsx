@@ -5,6 +5,7 @@ import { ModeToggle } from "../components/Header/ThemeChanger";
 import Profile from "../components/Header/Profile";
 import SidebarOptions from "../components/SidebarOptions";
 import { Bell, Menu, Clapperboard, Search } from "lucide-react";
+import { ScrollArea } from "../components/ui/scroll-area";
 
 import { Button } from "../components/ui/button";
 import {
@@ -103,11 +104,12 @@ export const HomePage: FC = () => {
           <Profile />
           <ModeToggle />
         </header>
-        <main
-          className="flex flex-1 items-center justify-center rounded-lg border border-dashed shadow-sm"
-          x-chunk="dashboard-02-chunk-1"
-        >
-          <Outlet />
+        <main>
+          <ScrollArea className="w-full h-screen">
+            
+            <Outlet />
+            
+          </ScrollArea>
         </main>
       </div>
     </div>

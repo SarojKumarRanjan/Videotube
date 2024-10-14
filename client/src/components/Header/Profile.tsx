@@ -10,7 +10,7 @@ import { Button } from ".././ui/button";
 import { CircleUser } from "lucide-react";
 import { Link } from "react-router-dom";
 
-const auth:boolean = false;
+const auth:boolean = true;
 
 function Profile() {
   return auth?(

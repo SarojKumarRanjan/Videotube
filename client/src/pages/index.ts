@@ -8,6 +8,7 @@ import Tweet from "./Tweet";
 import Playlist from "./Playlist";
 import Subscription from "./Subscription";
 import Dashboard from "./Dashboard";
+import SinglevideoPage from "./SinglevideoPage";
 
 
 
@@ -25,7 +26,8 @@ export {
     Tweet,
     Playlist,
     Subscription,
-    Dashboard
+    Dashboard,
+    SinglevideoPage
 
 
 }
