@@ -67,7 +67,7 @@ const Router = createBrowserRouter([
       {
         path:'subscription',
         element:(
-        <Authlayout auth={false}>
+        <Authlayout auth={true}>
         <Subscription/>
         </Authlayout>)
       },

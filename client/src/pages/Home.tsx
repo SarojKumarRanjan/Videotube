@@ -104,8 +104,8 @@ export const HomePage: FC = () => {
           <Profile />
           <ModeToggle />
         </header>
-        <main>
-          <ScrollArea className="w-full h-screen">
+        <main className="w-full">
+          <ScrollArea className=" h-screen">
             
             <Outlet />
             

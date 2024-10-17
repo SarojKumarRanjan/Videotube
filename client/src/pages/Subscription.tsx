@@ -1,8 +1,12 @@
-
+import SubscriptionVideo from "../components/Subscription/SubscriptionVideo"
+import SubscriptionPage from "../components/Subscription/ChannelScroll"
 
 function Subscription() {
   return (
-    <div>Subscription</div>
+    <div>
+      <SubscriptionPage />
+      <SubscriptionVideo />
+    </div>
   )
 }
 
