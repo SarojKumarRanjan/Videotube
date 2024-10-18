@@ -1,6 +1,7 @@
 
 import { Card, CardContent } from "../ui/card"
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar"
+import { Link } from "react-router-dom"
 
 interface VideoCardProps {
   thumbnailUrl?: string
@@ -23,7 +24,9 @@ export default function VideoCard({
   duration,
   episodeNumber,
 }: VideoCardProps) {
+  
   return (
+    <Link to={`/watch/${title}`}>
     <Card className="w-full max-w-[570px] overflow-hidden">
       <div className="relative">
         <img
@@ -60,5 +63,6 @@ export default function VideoCard({
         </div>
       </CardContent>
     </Card>
+    </Link>
   )
 }

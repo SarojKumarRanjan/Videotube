@@ -10,6 +10,7 @@ import Subscription from "./Subscription";
 import Dashboard from "./Dashboard";
 import SinglevideoPage from "./SinglevideoPage";
 import ChannelProfilePage from "./ChannelProfilePage";
+import PlaylistVideoPage from "./PlaylistVideoPage";
 
 
 
@@ -29,7 +30,8 @@ export {
     Subscription,
     Dashboard,
     SinglevideoPage,
-    ChannelProfilePage
+    ChannelProfilePage,
+    PlaylistVideoPage
 
 
 }

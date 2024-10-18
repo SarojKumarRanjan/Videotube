@@ -1,8 +1,10 @@
-
+import HistoryVideo from "../components/Video/HistoryVideo"
 
 function History() {
   return (
-    <div>History</div>
+    <div>
+      <HistoryVideo />
+    </div>
   )
 }
 

@@ -1,6 +1,7 @@
 
 import { ScrollArea, ScrollBar } from "../ui/scroll-area";
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
+import { Link } from "react-router-dom";
 
 interface Channel {
   id: string;
@@ -9,24 +10,24 @@ interface Channel {
 }
 
 const subscribedChannels: Channel[] = [
-  { id: "1", name: "Tech Talk", avatar: "/placeholder.svg?height=32&width=32" },
-  { id: "2", name: "Cooking Master", avatar: "/placeholder.svg?height=32&width=32" },
-  { id: "3", name: "Travel Diaries", avatar: "/placeholder.svg?height=32&width=32" },
-  { id: "4", name: "Fitness First", avatar: "/placeholder.svg?height=32&width=32" },
-  { id: "5", name: "Music Mania", avatar: "/placeholder.svg?height=32&width=32" },
-  { id: "6", name: "Science Explained", avatar: "/placeholder.svg?height=32&width=32" },
-  { id: "7", name: "Art & Craft", avatar: "/placeholder.svg?height=32&width=32" },
-  { id: "8", name: "Gaming Zone", avatar: "/placeholder.svg?height=32&width=32" },
-  { id: "9", name: "Tech Talk", avatar: "/placeholder.svg?height=32&width=32" },
-  { id: "1", name: "Tech Talk", avatar: "/placeholder.svg?height=32&width=32" },
-  { id: "2", name: "Cooking Master", avatar: "/placeholder.svg?height=32&width=32" },
-  { id: "3", name: "Travel Diaries", avatar: "/placeholder.svg?height=32&width=32" },
-  { id: "4", name: "Fitness First", avatar: "/placeholder.svg?height=32&width=32" },
-  { id: "5", name: "Music Mania", avatar: "/placeholder.svg?height=32&width=32" },
-  { id: "6", name: "Science Explained", avatar: "/placeholder.svg?height=32&width=32" },
-  { id: "7", name: "Art & Craft", avatar: "/placeholder.svg?height=32&width=32" },
-  { id: "8", name: "Gaming Zone", avatar: "/placeholder.svg?height=32&width=32" },
-  { id: "9", name: "Tech Talk", avatar: "/placeholder.svg?height=32&width=32" },
+  { id: "1", name: "Tech Talk", avatar: "https://images.pexels.com/photos/10144922/pexels-photo-10144922.jpeg?auto=compress&cs=tinysrgb&w=600&lazy=load" },
+  { id: "2", name: "Cooking Master", avatar: "https://images.pexels.com/photos/10144922/pexels-photo-10144922.jpeg?auto=compress&cs=tinysrgb&w=600&lazy=load" },
+  { id: "3", name: "Travel Diaries", avatar: "https://images.pexels.com/photos/10144922/pexels-photo-10144922.jpeg?auto=compress&cs=tinysrgb&w=600&lazy=load" },
+  { id: "4", name: "Fitness First", avatar: "https://images.pexels.com/photos/10144922/pexels-photo-10144922.jpeg?auto=compress&cs=tinysrgb&w=600&lazy=load" },
+  { id: "5", name: "Music Mania", avatar: "https://images.pexels.com/photos/10144922/pexels-photo-10144922.jpeg?auto=compress&cs=tinysrgb&w=600&lazy=load" },
+  { id: "6", name: "Science Explained", avatar: "https://images.pexels.com/photos/10144922/pexels-photo-10144922.jpeg?auto=compress&cs=tinysrgb&w=600&lazy=load" },
+  { id: "7", name: "Art & Craft", avatar: "https://images.pexels.com/photos/10144922/pexels-photo-10144922.jpeg?auto=compress&cs=tinysrgb&w=600&lazy=load" },
+  { id: "8", name: "Gaming Zone", avatar: "https://images.pexels.com/photos/10144922/pexels-photo-10144922.jpeg?auto=compress&cs=tinysrgb&w=600&lazy=load" },
+  { id: "9", name: "Tech Talk", avatar: "https://images.pexels.com/photos/10144922/pexels-photo-10144922.jpeg?auto=compress&cs=tinysrgb&w=600&lazy=load" },
+  { id: "1", name: "Tech Talk", avatar: "https://images.pexels.com/photos/10144922/pexels-photo-10144922.jpeg?auto=compress&cs=tinysrgb&w=600&lazy=load" },
+  { id: "2", name: "Cooking Master", avatar: "https://images.pexels.com/photos/10144922/pexels-photo-10144922.jpeg?auto=compress&cs=tinysrgb&w=600&lazy=load" },
+  { id: "3", name: "Travel Diaries", avatar: "https://images.pexels.com/photos/10144922/pexels-photo-10144922.jpeg?auto=compress&cs=tinysrgb&w=600&lazy=load" },
+  { id: "4", name: "Fitness First", avatar: "https://images.pexels.com/photos/10144922/pexels-photo-10144922.jpeg?auto=compress&cs=tinysrgb&w=600&lazy=load" },
+  { id: "5", name: "Music Mania", avatar: "https://images.pexels.com/photos/10144922/pexels-photo-10144922.jpeg?auto=compress&cs=tinysrgb&w=600&lazy=load" },
+  { id: "6", name: "Science Explained", avatar: "https://images.pexels.com/photos/10144922/pexels-photo-10144922.jpeg?auto=compress&cs=tinysrgb&w=600&lazy=load" },
+  { id: "7", name: "Art & Craft", avatar: "https://images.pexels.com/photos/10144922/pexels-photo-10144922.jpeg?auto=compress&cs=tinysrgb&w=600&lazy=load" },
+  { id: "8", name: "Gaming Zone", avatar: "https://images.pexels.com/photos/10144922/pexels-photo-10144922.jpeg?auto=compress&cs=tinysrgb&w=600&lazy=load" },
+  { id: "9", name: "Tech Talk", avatar: "https://images.pexels.com/photos/10144922/pexels-photo-10144922.jpeg?auto=compress&cs=tinysrgb&w=600&lazy=load" },
 ];
 
 export default function SubscriptionPage() {
@@ -42,13 +43,17 @@ export default function SubscriptionPage() {
       <div className="flex  space-x-2 p-2">
         {
             subscribedChannels.map((channel) => (
+                <Link to={`/channel/${channel.id}`}>
                 <div key={channel.id} className=" flex flex-col items-center space-y-2 min-w-[100px]">
+                   
                   <Avatar className="h-16 w-16">
                     <AvatarImage src={channel.avatar} alt={channel.name} />
                     <AvatarFallback>{channel.name[0]}</AvatarFallback>
                   </Avatar>
                   <span className="text-sm font-medium text-center">{channel.name}</span>
+                   
                 </div>
+                 </Link>
               ))
         }
       </div>
@@ -56,22 +61,7 @@ export default function SubscriptionPage() {
     </ScrollArea>
 
       
-      {/*  <ScrollArea className="whitespace-nowrap rounded-md border">
-        <div className="flex">
-            {subscribedChannels.map((channel) => (
-              <div key={channel.id} className=" flex flex-col items-center space-y-2 min-w-[100px]">
-                <Avatar className="h-16 w-16">
-                  <AvatarImage src={channel.avatar} alt={channel.name} />
-                  <AvatarFallback>{channel.name[0]}</AvatarFallback>
-                </Avatar>
-                <span className="text-sm font-medium text-center">{channel.name}</span>
-              </div>
-            ))}
-            </div>
-
-            <ScrollBar orientation="horizontal" />
-
-</ScrollArea> */}
+      
          
          
       
