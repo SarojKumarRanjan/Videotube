@@ -1,6 +1,4 @@
-
-import DisplayVideo from "../Video/DisplayVideo";
-
+import DisplayVideo from "./DisplayVideo";
 const videos = [
     {
       thumbnailUrl: "https://images.pexels.com/photos/158063/bellingrath-gardens-alabama-landscape-scenic-158063.jpeg?auto=compress&cs=tinysrgb&w=600",
@@ -26,13 +24,13 @@ const videos = [
   ];
 
 
-function SubscriptionVideo() {
+function LikedVideos() {
   return (
     <div >
-    <h2 className=" m-6 text-xl font-semibold mb-4">Latest from your subscriptions</h2>
+    <h2 className=" m-6 text-xl font-semibold mb-4">Latest from your Liked Videos</h2>
    <DisplayVideo videos={videos}/>
    </div>
   )
 }
 
-export default SubscriptionVideo
+export default LikedVideos

@@ -1,4 +1,4 @@
-import * as React from "react";
+
 import { ScrollArea, ScrollBar } from "../ui/scroll-area";
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 
@@ -33,13 +33,13 @@ export default function SubscriptionPage() {
   
 
   return (
-    <div className=" mx-auto px-4 py-8">
+    <div className=" mx-auto px-6 py-4">
       <h1 className="text-2xl font-bold mb-6">Subscriptions</h1>
 
 
 
-      <ScrollArea className="w-full whitespace-nowrap rounded-md border">
-      <div className="flex w-max space-x-4 p-4">
+      <ScrollArea className="w-[272px] md:w-[500px] lg:w-[700px] xl:w-[1100px] 2xl:w-[1184px] whitespace-nowrap rounded-md border">
+      <div className="flex  space-x-2 p-2">
         {
             subscribedChannels.map((channel) => (
                 <div key={channel.id} className=" flex flex-col items-center space-y-2 min-w-[100px]">

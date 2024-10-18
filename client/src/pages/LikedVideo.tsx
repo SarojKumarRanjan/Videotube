@@ -1,8 +1,10 @@
-
+import LikedVideos  from "../components/Video/LikedVideo"
 
 function LikedVideo() {
   return (
-    <div>LikedVideo</div>
+    <div>
+      <LikedVideos />
+    </div>
   )
 }
 

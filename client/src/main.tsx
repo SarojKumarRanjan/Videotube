@@ -17,7 +17,8 @@ import {
   Playlist,
   Subscription,
   Dashboard,
-  SinglevideoPage
+  SinglevideoPage,
+  ChannelProfilePage
 } from "./pages/index.ts"
 
 // eslint-disable-next-line react-refresh/only-export-components
@@ -43,7 +44,7 @@ const Router = createBrowserRouter([
       {
         path:'liked-video',
         element:(
-        <Authlayout auth={false}>
+        <Authlayout auth={true}>
         <LikedVideo/>
         </Authlayout>)
       },{
@@ -84,6 +85,15 @@ const Router = createBrowserRouter([
         <Authlayout auth={true}>
         <SinglevideoPage/>
         </Authlayout>)
+      },
+      {
+        path:'channel/:channelId',
+        element:(
+          <Authlayout auth={true}>
+          <ChannelProfilePage/>
+          </Authlayout>
+
+        )
       }
     ]
   }
