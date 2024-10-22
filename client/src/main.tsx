@@ -20,6 +20,7 @@ import {
   SinglevideoPage,
   ChannelProfilePage,
   PlaylistVideoPage,
+  Uploadpage,
 } from "./pages/index.ts";
 
 // eslint-disable-next-line react-refresh/only-export-components
@@ -108,6 +109,14 @@ const Router = createBrowserRouter([
           </Authlayout>
         ),
       },
+      {
+        path: "upload",
+        element:(
+          <Authlayout auth={true}>
+            <Uploadpage />
+            </Authlayout>
+        )
+      }
     ],
   },
 ]);

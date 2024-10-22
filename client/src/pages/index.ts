@@ -11,6 +11,7 @@ import Dashboard from "./Dashboard";
 import SinglevideoPage from "./SinglevideoPage";
 import ChannelProfilePage from "./ChannelProfilePage";
 import PlaylistVideoPage from "./PlaylistVideoPage";
+import Uploadpage from "./Uploadpage";
 
 
 
@@ -31,7 +32,8 @@ export {
     Dashboard,
     SinglevideoPage,
     ChannelProfilePage,
-    PlaylistVideoPage
+    PlaylistVideoPage,
+    Uploadpage
 
 
 }
