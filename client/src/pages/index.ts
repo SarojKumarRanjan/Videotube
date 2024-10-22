@@ -7,7 +7,7 @@ import History from "./History";
 import Tweet from "./Tweet";
 import Playlist from "./Playlist";
 import Subscription from "./Subscription";
-import Dashboard from "./Dashboard";
+import DashboardPage from "./Dashboard";
 import SinglevideoPage from "./SinglevideoPage";
 import ChannelProfilePage from "./ChannelProfilePage";
 import PlaylistVideoPage from "./PlaylistVideoPage";
@@ -29,7 +29,7 @@ export {
     Tweet,
     Playlist,
     Subscription,
-    Dashboard,
+    DashboardPage,
     SinglevideoPage,
     ChannelProfilePage,
     PlaylistVideoPage,

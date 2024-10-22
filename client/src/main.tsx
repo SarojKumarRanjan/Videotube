@@ -16,7 +16,7 @@ import {
   Tweet,
   Playlist,
   Subscription,
-  Dashboard,
+  DashboardPage,
   SinglevideoPage,
   ChannelProfilePage,
   PlaylistVideoPage,
@@ -80,8 +80,8 @@ const Router = createBrowserRouter([
       {
         path: "dashboard",
         element: (
-          <Authlayout auth={false}>
-            <Dashboard />
+          <Authlayout auth={true}>
+            <DashboardPage />
           </Authlayout>
         ),
       },

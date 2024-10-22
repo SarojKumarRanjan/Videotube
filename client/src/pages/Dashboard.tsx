@@ -1,9 +1,11 @@
+import ChannelDashboard from "../components/Dashboard/Dashboard"
 
-
-function Dashboard() {
+function DashboardPage() {
   return (
-    <div>Dashboard</div>
+    <div>
+      <ChannelDashboard />
+    </div>
   )
 }
 
-export default Dashboard
+export default DashboardPage
