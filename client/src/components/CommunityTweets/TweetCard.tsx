@@ -43,7 +43,7 @@ export default function TweetCard({
   }
 
   return (
-    <Card className="w-full max-w-2xl mx-auto">
+    <Card className="w-full max-w-2xl mx-auto my-6">
       <CardHeader>
         <div className="flex justify-between items-center space-x-4">
             <div className="flex gap-4 items-center">

@@ -19,7 +19,7 @@ import {
   DashboardPage,
   SinglevideoPage,
   ChannelProfilePage,
-  PlaylistVideoPage,
+  PlaylistVideo,
   Uploadpage,
 } from "./pages/index.ts";
 
@@ -105,7 +105,7 @@ const Router = createBrowserRouter([
         path: "playlist/:playlistId",
         element: (
           <Authlayout auth={true}>
-            <PlaylistVideoPage />
+            <PlaylistVideo />
           </Authlayout>
         ),
       },
