@@ -11,6 +11,7 @@ import {
 import PlaylistVideoCard from "./PlaylistVideoCard";
 import { PlayCircle, Plus, Pencil, Share2, MoreVertical } from "lucide-react";
 import { useParams } from "react-router-dom";
+import { ScrollArea } from "../ui/scroll-area";
 
 
 
@@ -159,10 +160,12 @@ function PlaylistVideoPage() {
               </SelectContent>
             </Select>
           </div>
+          <ScrollArea className="h-[calc(100vh-200px)]">
          
           {playlistVideos.map((video) => (
             <PlaylistVideoCard key={video.id} playlistVideo={video} />
           ))}
+            </ScrollArea>
          
         </div>
       </div>

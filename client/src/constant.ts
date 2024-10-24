@@ -260,3 +260,6 @@ export const videos = [
         episodeNumber: 1
       },
 ]
+
+
+export const BASE_URL = "http://localhost:4000"
