@@ -160,7 +160,7 @@ function PlaylistVideoPage() {
               </SelectContent>
             </Select>
           </div>
-          <ScrollArea className="h-[calc(100vh-200px)]">
+          <ScrollArea className="h-[calc(100vh-178px)]">
          
           {playlistVideos.map((video) => (
             <PlaylistVideoCard key={video.id} playlistVideo={video} />

@@ -105,7 +105,7 @@ export const HomePage: FC = () => {
           <ModeToggle />
         </header>
         <main className="w-full">
-          <ScrollArea className="h-svh">
+          <ScrollArea className="h-[calc(100vh-60px)]">
             
             <Outlet />
             
