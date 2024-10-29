@@ -4,17 +4,19 @@ import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar"
 import { Link } from "react-router-dom"
 
 interface VideoCardProps {
+  _id:string
   thumbnailUrl?: string
   title?: string
   channelName?: string
   channelAvatarUrl?: string
-  views?: string
+  views?: number
   uploadedAt?: string
-  duration?: string
-  episodeNumber?: number
+  duration?: number
+  
 }
 
 export default function VideoCard({
+  _id,
   thumbnailUrl,
   title,
   channelName,
@@ -22,11 +24,11 @@ export default function VideoCard({
   views,
   uploadedAt,
   duration,
-  episodeNumber,
+ 
 }: VideoCardProps) {
   
   return (
-    <Link to={`/watch/${title}`}>
+    <Link to={`/watch/${_id}`}>
     <Card className="w-full max-w-[570px] overflow-hidden">
       <div className="relative">
         <img
@@ -34,11 +36,8 @@ export default function VideoCard({
           alt={title || "Video thumbnail"}
           className="w-full aspect-video object-cover"
         />
-        {episodeNumber && (
-          <div className="absolute top-2 left-2 bg-black text-white text-xs font-bold px-1 rounded">
-            #{episodeNumber}
-          </div>
-        )}
+        
+        
         {duration && (
           <div className="absolute bottom-2 right-2 bg-black text-white text-xs px-1 rounded">
             {duration}
@@ -57,7 +56,7 @@ export default function VideoCard({
               {channelName || "Channel Name"}
             </p>
             <p className="text-xs text-muted-foreground">
-              {views || "0 views"} • {uploadedAt || "Recently"}
+              {views+" views" || "0 views"} • {uploadedAt || "Recently"}
             </p>
           </div>
         </div>

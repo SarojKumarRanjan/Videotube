@@ -1,6 +1,7 @@
 import axios from "axios";
 import toast from "react-hot-toast";
 import { BASE_URL } from "../constant";
+import { AxiosError } from "axios";
 
 const API = axios.create({
   baseURL: BASE_URL,
@@ -35,17 +36,51 @@ API.interceptors.response.use(
   }
 );
 
-export const login = async (formData) => {
+
+interface loginFormDataInterface{
+username?:string,
+email?:string
+password:string
+}
+
+type user = {
+    _id:string,
+    username:string,
+    fullName:string,
+    avatar:string,
+    coverImage:string,
+    watchHistory:Array<string>,
+    createdAt:string,
+    updatedAt:string,
+    __v:number
+}
+
+interface loginResponse{
+    statusCode:number,
+    message:string,
+    data:user,
+    success:boolean,
+    accessToken:string,
+    refreshToken:string
+}
+
+export const login = async (formData:loginFormDataInterface):Promise<loginResponse> => {
   try {
     const res = await API.post("/user/login", formData);
 
     const data = res.data;
     toast.success(data?.message);
 
-    return data?.data;
+    return data;
   } catch (error) {
-    toast.error(error?.response?.data?.error);
-    throw error?.response?.data?.error;
+    if (error instanceof AxiosError && error.response) {
+        toast.error(error?.response?.data?.error|| "Error while logging in");
+    } else {
+        toast.error("something went wrong while login")
+    }
+    console.log(error);
+    
+    throw error
   }
 };
 
@@ -58,9 +93,14 @@ export const logout = async () => {
     return data;
   } catch (error) {
     //console.log(error);
-
-    toast.error(error?.response?.data?.error);
-    throw error?.response?.data?.error;
+if (error instanceof AxiosError && error.response) {
+    toast.error(error?.response?.data?.error|| "error while logout");
+} else {
+    toast.error("something went wrong while logout")
+}
+    console.log(error);
+    
+    throw error
   }
 };
 
@@ -73,30 +113,50 @@ export const getCurrentUser = async () => {
     
     return data?.data;
   } catch (error) {
-    throw error?.response?.data?.error;
+    if (error instanceof AxiosError && error.response) {
+        toast.error(error?.response?.data?.error||"error getting user info")
+    } else {
+        toast.error("something went wrong while getting user detail")
+    }
+    console.log(error);
+    
+    throw error
   }
 };
 
-export const registerUser = async (data) => {
+interface registerUser{
+    username:string,
+    fullName:string,
+    email:string,
+    password:string,
+    avatar:File,
+    coverImage?:File
+
+}
+
+export const registerUser = async (data:registerUser):Promise<loginResponse> => {
   const formData = new FormData();
 
-  if (!data.avatar) {
-    toast.error("Avatar is required");
-    return;
-  }
+  
   formData.append("avatar", data.avatar);
 
-  formData.append("username", data.username);
+  formData.append("userName", data.username);
   formData.append("email", data.email);
   formData.append("password", data.password);
-  formData.append("fullname", data.fullname);
+  formData.append("fullName", data.fullName);
   try {
     const { data } = await API.post("/user/register", formData);
     toast.success(data?.message);
     return data?.data;
   } catch (error) {
-    toast.error(error?.response?.data?.error);
-    throw error?.response?.data?.error;
+    if (error instanceof AxiosError && error.response) {
+        toast.error(error?.response?.data?.error|| "error while registering user");
+    } else {
+        toast.error("something went wrong while registering user")
+    }
+   console.log(error);
+   
+    throw error
   }
 };
 
@@ -107,6 +167,32 @@ export const refreshAccessToken = async () => {
     console.log(data);
     return data?.data;
   } catch (error) {
-    throw error?.response?.data?.error;
+    if (error instanceof AxiosError && error.response) {
+        toast.error(error?.response?.data?.error||"error while refreshing access token")
+    } else {
+        toast.error("something went wrong while refreshing access token")
+    }
+    console.log(error);
+    
+    throw error
   }
 };
+
+
+export const getUserHistory = async() => {
+    try {
+        const res = await API.get("/users/history")
+        const data = res?.data;
+        return data?.data
+    } catch (error) {
+        if (error instanceof AxiosError && error.response) {
+            toast.error(error?.response?.data?.error||"error while getting user history")
+        } else {
+            toast.error("something went wrong while getting user's history")
+        }
+
+        console.log(error);
+        throw error;
+        
+    }
+}

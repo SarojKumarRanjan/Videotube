@@ -1,13 +1,55 @@
 
 
 import DisplayVideo from "../components/Video/DisplayVideo";
-import { videos } from "../constant";
+
+import { useVideos } from "../hooks/video.hook";
+import { useEffect } from "react";
+
+
+
+import { useInView } from 'react-intersection-observer';
+
+
+
+
+  // Create an intersection observer for infinite scroll
+ 
 
 
 function Welcome() {
+
+  const { ref, inView } = useInView();
+
+  // Use our custom hook with a limit of 12 videos per page
+  const {
+    data,
+    isLoading,
+    isError,
+    error,
+    fetchNextPage,
+    hasNextPage,
+    isFetchingNextPage
+  } = useVideos();
+
+  // Fetch next page when the last element comes into view
+  useEffect(() => {
+    if (inView && hasNextPage) {
+      fetchNextPage();
+    }
+  }, [inView, fetchNextPage, hasNextPage]);
+
+
+console.log(data?.pages[0]);
+
+if(isLoading){
+  return (
+    <div>loading</div>
+  )
+}
+
   return (
     <div>
-      <DisplayVideo videos={videos}/>
+      <DisplayVideo videos={data?.pages[0]}/>
     </div>
   );
 }

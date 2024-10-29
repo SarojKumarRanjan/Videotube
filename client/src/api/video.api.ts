@@ -25,11 +25,13 @@ interface updateVideoDetails{
    
 }
 
-export const getAllVideo = async (page:number,limit:number) => {
+export const getAllVideo = async (pageParam:number) => {
   try {
-    const res = await API.get("/video/get-all-videos?page="+page+"&limit="+limit);
+    const res = await API.get("/video/get-all-videos?page="+pageParam+"&limit="+12);
     const data = res.data;
-    return data;
+   // console.log(data);
+    
+    return data?.data?.docs;
   } catch (error) {
     if (error instanceof AxiosError && error.response) {
       toast.error(

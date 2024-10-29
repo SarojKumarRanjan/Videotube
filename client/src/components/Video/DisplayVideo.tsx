@@ -1,15 +1,27 @@
 import React from "react";
 import VideoCard from "./VideoCard";
 
+
+type owner = {
+    _id:string
+    userName:string
+    avatar:string
+}
+
 interface Video {
-  thumbnailUrl: string;
+  _id:string
+  videoFile:string
+  thumbnail: string;
   title: string;
-  channelName: string;
-  channelAvatarUrl: string;
-  views: string;
-  uploadedAt: string;
-  duration: string;
-  episodeNumber: number;
+  owner:string
+  description:string
+  duration:number
+  views:number
+  isPublished:boolean
+  createdAt:string
+  updatedAt:string
+  __v?:number
+  ownerDetails:owner
 }
 
 interface DisplayVideoProps {
@@ -22,17 +34,18 @@ const DisplayVideo: React.FC<DisplayVideoProps> = ({ videos }) => {
   return (
     <div>
       <div className="m-6 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3  gap-4">
-        {videos.map((video, index) => (
+        {videos.map((singleVideo:Video) => (
           <VideoCard
-            key={index}
-            thumbnailUrl={video.thumbnailUrl}
-            title={video.title}
-            channelName={video.channelName}
-            channelAvatarUrl={video.channelAvatarUrl}
-            views={video.views}
-            uploadedAt={video.uploadedAt}
-            duration={video.duration}
-            episodeNumber={video.episodeNumber}
+            key={singleVideo._id}
+            _id={singleVideo._id}
+            thumbnailUrl={singleVideo.thumbnail}
+            title={singleVideo.title}
+            channelName={singleVideo?.ownerDetails?.userName}
+            channelAvatarUrl={singleVideo?.ownerDetails?.avatar}
+            views={singleVideo.views}
+            uploadedAt={singleVideo.createdAt}
+            duration={singleVideo.duration}
+            
           />
         ))}
       </div>

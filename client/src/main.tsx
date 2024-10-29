@@ -23,6 +23,10 @@ import {
   Uploadpage,
 } from "./pages/index.ts";
 
+import { QueryClient,QueryClientProvider } from "@tanstack/react-query";
+
+const queryclient = new QueryClient()
+
 // eslint-disable-next-line react-refresh/only-export-components
 const Router = createBrowserRouter([
   {
@@ -123,10 +127,13 @@ const Router = createBrowserRouter([
 
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
+    <QueryClientProvider client={queryclient}>
     <ThemeProvider defaultTheme="system" storageKey="vite-ui-theme">
+
       <Provider store={store}>
         <RouterProvider router={Router} />
       </Provider>
     </ThemeProvider>
+    </QueryClientProvider>
   </StrictMode>
 );
