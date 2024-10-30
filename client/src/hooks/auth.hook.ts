@@ -17,9 +17,10 @@ export const useLogin = () => {
       mutationFn: (formData:loginFormDataInterface) => login(formData),
     
       onSuccess: () => {
-        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-        //@ts-ignore
-        queryClient.invalidateQueries('currentUser')
+        
+        queryClient.invalidateQueries({
+            queryKey:["currentUser"]
+        })
       },
       retry: 0,
     });
@@ -36,7 +37,7 @@ export const useLogin = () => {
     return useQuery({
       queryKey: ["currentUser"],
       queryFn: () => getCurrentUser(),
-      staleTime: 1000 * 60 * 5,
+      staleTime: 1000,
       retry: 0,
     });
   };

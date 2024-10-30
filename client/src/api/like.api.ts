@@ -15,7 +15,10 @@ export const getLikedVideo = async() =>{
     try {
         const res = await API.get("/like/liked/video");
         const data = res.data;
-        return data;
+        //console.log(data);
+        return data?.data;
+        
+        
     } catch (error) {
         if (error instanceof AxiosError && error.response) {
             toast.error(

@@ -13,7 +13,7 @@ function App() {
   const {data,isFetching} = useCurrentUser()
   // eslint-disable-next-line @typescript-eslint/ban-ts-comment
   //@ts-ignore
-  const user = useSelector((state) => state?.auth?.user)
+  const user = useSelector((state) => state?.auth?.authStatus)
   useEffect(() => {
     if(!isFetching){
       if(data && !user){

@@ -25,6 +25,8 @@ function Profile() {
 
 const handleLogout = async() => {
  const session =  await logout();
+ 
+ 
  if(session){
   dispatch(unSetUser());
  }

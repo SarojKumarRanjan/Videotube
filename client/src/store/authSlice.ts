@@ -17,8 +17,12 @@ const authSlice = createSlice({
       }
     },
     unSetUser: (state) => {
+      console.log("unset user gets called and the status and user are "+state.user+" "+state.authStatus);
+      
       state.user = null;
-      state.authStatus = false;
+      state.authStatus=false;
+      console.log(state.authStatus);
+      
     },
   },
 });

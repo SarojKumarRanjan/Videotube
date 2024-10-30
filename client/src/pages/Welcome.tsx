@@ -39,7 +39,7 @@ function Welcome() {
   }, [inView, fetchNextPage, hasNextPage]);
 
 
-console.log(data?.pages[0]);
+//console.log(data?.pages[0]);
 
 if(isLoading){
   return (

@@ -31,6 +31,14 @@ interface DisplayVideoProps {
 const DisplayVideo: React.FC<DisplayVideoProps> = ({ videos }) => {
   //console.log(videos);
 
+  if(!videos){
+    return(
+        <div>
+            loading....
+        </div>
+    )
+  }
+
   return (
     <div>
       <div className="m-6 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3  gap-4">
