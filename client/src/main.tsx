@@ -24,6 +24,9 @@ import {
 } from "./pages/index.ts";
 
 import { QueryClient,QueryClientProvider } from "@tanstack/react-query";
+import { Toaster } from "react-hot-toast";
+import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
+
 
 const queryclient = new QueryClient()
 
@@ -131,6 +134,13 @@ createRoot(document.getElementById("root")!).render(
     <ThemeProvider defaultTheme="system" storageKey="vite-ui-theme">
 
       <Provider store={store}>
+      {import.meta.env.MODE === "development" && (
+      <ReactQueryDevtools initialIsOpen={false} />
+    )}
+      <Toaster
+  position="top-right"
+  reverseOrder={true}
+/>
         <RouterProvider router={Router} />
       </Provider>
     </ThemeProvider>

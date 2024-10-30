@@ -66,7 +66,7 @@ interface loginResponse{
 
 export const login = async (formData:loginFormDataInterface):Promise<loginResponse> => {
   try {
-    const res = await API.post("/user/login", formData);
+    const res = await API.post("/users/login", formData);
 
     const data = res.data;
     toast.success(data?.message);
@@ -86,7 +86,7 @@ export const login = async (formData:loginFormDataInterface):Promise<loginRespon
 
 export const logout = async () => {
   try {
-    const { data } = await API.get("/user/logout");
+    const { data } = await API.post("/users/logout");
     toast.success(data?.message);
     // console.log(data);
 
@@ -108,7 +108,7 @@ export const getCurrentUser = async () => {
   console.log("get current user called");
   
   try {
-    const { data } = await API.get("/user/current-user");
+    const { data } = await API.get("/users/current-user");
     console.log(data);
     
     return data?.data;
@@ -158,7 +158,7 @@ export const registerUser = async (data:registerUser):Promise<loginResponse> => 
    
     throw error
   }
-};
+}
 
 export const refreshAccessToken = async () => {
   console.log("refresh access token called");
@@ -176,7 +176,7 @@ export const refreshAccessToken = async () => {
     
     throw error
   }
-};
+}
 
 
 export const getUserHistory = async() => {
@@ -195,4 +195,81 @@ export const getUserHistory = async() => {
         throw error;
         
     }
+}
+export const getUserChannelStat = async(username:string) => {
+    try {
+        const res = await API.get("/users/channel"+username);
+        const data = res?.data
+        return data;
+    } catch (error) {
+        if (error instanceof AxiosError && error.response) {
+            toast.error(error?.response?.data?.error||"error while getting user channel info")
+        } else {
+            toast.error("something went wrong while getting user's channel info")
+        }
+
+        console.log(error);
+        throw error; 
+    }
+
+}
+
+interface userdetails{
+    userName?:string
+    fullName?:string
+    email?:string
+}
+
+export const updateAccountDetails = async(userDetails:userdetails) => {
+    try {
+        const res = await API.patch("/users/update-account",userDetails);
+        const data = res?.data
+        return data;
+    } catch (error) {
+        if (error instanceof AxiosError && error.response) {
+            toast.error(error?.response?.data?.error||"error while updating user info")
+        } else {
+            toast.error("something went wrong while updating user info")
+        }
+
+        console.log(error);
+        throw error; 
+    }
+
+}
+
+export const updateUserAvatar = async(avatar:File) => {
+    
+    
+    try {
+        const res = await API.patch("/users/update-avatar",avatar);
+        const data = res?.data
+        return data;
+    } catch (error) {
+        if (error instanceof AxiosError && error.response) {
+            toast.error(error?.response?.data?.error||"error while updating user avatar")
+        } else {
+            toast.error("something went wrong while updating user avatar")
+        }
+
+        console.log(error);
+        throw error; 
+    }
+}
+
+export const updateUserCoverImage = async(coverImage:File) => {
+try {
+    const res = await API.patch("/users/update-cover-image",coverImage);
+    const data = res?.data;
+    return data;
+} catch (error) {
+    if (error instanceof AxiosError && error.response) {
+        toast.error(error?.response?.data?.error||"error while updating user coverImage")
+    } else {
+        toast.error("something went wrong while updating user coverImage")
+    }
+
+    console.log(error);
+    throw error; 
+}
 }

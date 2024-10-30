@@ -9,10 +9,26 @@ import {
 import { Button } from ".././ui/button";
 import { CircleUser } from "lucide-react";
 import { Link } from "react-router-dom";
+import { useLogout } from "../../hooks/auth.hook";
+import { useDispatch } from "react-redux";
+import { useSelector } from "react-redux";
+import { unSetUser } from "../../store/authSlice";
 
-const auth:boolean = true;
+
 
 function Profile() {
+  const dispatch = useDispatch()
+  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+  //@ts-ignore
+  const auth = useSelector((state) =>state?.auth?.authStatus )
+  const {mutateAsync: logout} = useLogout();
+
+const handleLogout = async() => {
+ const session =  await logout();
+ if(session){
+  dispatch(unSetUser());
+ }
+}
   return auth?(
     <DropdownMenu>
     <DropdownMenuTrigger asChild>
@@ -27,7 +43,7 @@ function Profile() {
       <DropdownMenuItem>Settings</DropdownMenuItem>
       <DropdownMenuItem>Support</DropdownMenuItem>
       <DropdownMenuSeparator />
-      <DropdownMenuItem>Logout</DropdownMenuItem>
+      <DropdownMenuItem onClick={handleLogout}>Logout</DropdownMenuItem>
     </DropdownMenuContent>
   </DropdownMenu>
   ):(

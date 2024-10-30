@@ -47,8 +47,24 @@ if(isLoading){
   )
 }
 
-  return (
+if(isError){
+  return(
     <div>
+      {error?.message}
+    </div>
+  )
+}
+
+if(isFetchingNextPage){
+  return(
+    <div>
+      Fetching next page
+    </div>
+  )
+}
+
+  return (
+    <div ref={ref}>
       <DisplayVideo videos={data?.pages[0]}/>
     </div>
   );
