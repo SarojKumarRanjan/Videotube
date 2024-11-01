@@ -71,7 +71,7 @@ export const getVideoById = async (videoId:string) => {
     try {
         const res = await API.get("/video/get-video/"+videoId);
         const data = res.data;
-        return data;
+        return data?.data;
     } catch (error) {
         if (error instanceof AxiosError && error.response) {
         toast.error(

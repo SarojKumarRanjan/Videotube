@@ -1,65 +1,92 @@
-import * as React from "react"
-import { Button } from "../ui/button"
-import { Input } from "../ui/input"
-import { Label } from "../ui/label"
-import { Textarea } from "../ui/textarea"
-import { Switch } from "../ui/switch"
-import { Progress } from "../ui/progress"
-import { Card, CardContent } from "../ui/card"
-import { Upload, X } from "lucide-react"
+import { useState } from "react";
+import { Button } from "../ui/button";
+import { Input } from "../ui/input";
+import { Label } from "../ui/label";
+import { Textarea } from "../ui/textarea";
+import { Switch } from "../ui/switch";
+import { Progress } from "../ui/progress";
+import { Card, CardContent } from "../ui/card";
+import { Upload, X } from "lucide-react";
+import { useUploadVideo } from "../../hooks/video.hook";
+import { useNavigate } from "react-router-dom";
+import toast from "react-hot-toast";
 
 export default function VideoUpload() {
-  const [videoFile, setVideoFile] = React.useState<File | null>(null)
-  const [thumbnailFile, setThumbnailFile] = React.useState<File | null>(null)
-  const [title, setTitle] = React.useState("")
-  const [description, setDescription] = React.useState("")
-  const [isPublished, setIsPublished] = React.useState(false)
-  const [uploadProgress, setUploadProgress] = React.useState(0)
-  const [thumbnailPreview, setThumbnailPreview] = React.useState<string | null>(null)
+  const navigate = useNavigate();
+  const { mutateAsync: publishVideo, isError, error } = useUploadVideo();
+  const [videoFile, setVideoFile] = useState<File | null>(null);
+  const [thumbnailFile, setThumbnailFile] = useState<File | null>(null);
+  const [title, setTitle] = useState("");
+  const [description, setDescription] = useState("");
+  const [isPublished, setIsPublished] = useState(false);
+  const [uploadProgress, setUploadProgress] = useState(0);
+  const [thumbnailPreview, setThumbnailPreview] = useState<string | null>(null);
 
   const handleVideoFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const file = event.target.files?.[0]
+    const file = event.target.files?.[0];
     if (file) {
-      setVideoFile(file)
+      setVideoFile(file);
       // Simulate upload progress
-      let progress = 0
+      let progress = 0;
       const interval = setInterval(() => {
-        progress += 10
-        setUploadProgress(progress)
+        progress += 10;
+        setUploadProgress(progress);
         if (progress >= 100) {
-          clearInterval(interval)
+          clearInterval(interval);
         }
-      }, 500)
+      }, 500);
     }
-  }
+  };
 
   const handleThumbnailFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const file = event.target.files?.[0]
+    const file = event.target.files?.[0];
     if (file) {
-      setThumbnailFile(file)
-      const reader = new FileReader()
+      setThumbnailFile(file);
+      const reader = new FileReader();
       reader.onloadend = () => {
-        setThumbnailPreview(reader.result as string)
-      }
-      reader.readAsDataURL(file)
+        setThumbnailPreview(reader.result as string);
+      };
+      reader.readAsDataURL(file);
     }
-  }
+  };
 
-  const handleSubmit = (event: React.FormEvent) => {
-    event.preventDefault()
-    // Here you would typically send the data to your backend
-    console.log({ videoFile, thumbnailFile, title, description, isPublished })
-  }
+  const handleSubmit = async (event: React.FormEvent) => {
+    event.preventDefault();
+    const formData = new FormData();
+
+    if (videoFile) formData.append("videoFile", videoFile);
+    if (thumbnailFile) formData.append("thumbnail", thumbnailFile);
+    formData.append("title", title);
+    formData.append("description", description);
+    formData.append("isPublished", String(isPublished));
+
+    try {
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      //@ts-ignore
+      await publishVideo(formData);
+      toast.success("Video published successfully!");
+      navigate("/");
+     
+    } catch (uploadError) {
+      console.error("Error uploading video:", uploadError);
+    }
+  };
 
   const removeThumbnail = () => {
-    setThumbnailFile(null)
-    setThumbnailPreview(null)
-  }
+    setThumbnailFile(null);
+    setThumbnailPreview(null);
+  };
 
   return (
     <div className="container mx-auto p-4 max-w-2xl">
       <h1 className="text-2xl font-bold mb-4">Upload Video</h1>
       <form onSubmit={handleSubmit} className="space-y-4">
+        {isError && (
+          <p className="text-red-500">
+            {error instanceof Error ? error.message : "Error uploading video"}
+          </p>
+        )}
+        
         <div>
           <Label htmlFor="video-file">Video File</Label>
           <Input
@@ -139,7 +166,7 @@ export default function VideoUpload() {
         <Button type="submit" className="w-full">
           <Upload className="mr-2 h-4 w-4" /> Upload Video
         </Button>
-      </form>"
+      </form>
     </div>
-    )
+  );
 }

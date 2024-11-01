@@ -5,8 +5,17 @@ import { useGetLikedVideo } from "../../hooks/like.hook";
 
 
 function LikedVideos() {
-    const {data,error,isError,IsLoading} =  useGetLikedVideo()
+    const {data,error,isError} =  useGetLikedVideo()
     //console.log(data);
+    if(isError){
+        return(
+            <div>
+                {error?.message}
+            </div>
+        )
+    }
+
+   
     
   return (
     <div >

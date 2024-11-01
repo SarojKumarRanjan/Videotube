@@ -6,17 +6,22 @@ import { Link } from "react-router-dom";
 interface PlaylistCardProps {
   coverImage: string;
   title: string;
-  part: string;
+  _id:string
   videoCount: number;
-  channelName: string;
+  totalViews:number;
+  description:string
+  totalDuration:number
 }
 
 export default function PlaylistCard({
   coverImage,
   title,
-  part,
+  _id,
   videoCount,
-  channelName,
+  
+  description,
+  totalDuration
+  
 }: PlaylistCardProps) {
   return (
     <div className="w-full max-w-[570px]">
@@ -32,7 +37,7 @@ export default function PlaylistCard({
               <div className="flex justify-between items-start"></div>
 
               <div className="flex flex-col items-center justify-center absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                <Link to={`${part}`}>
+                <Link to={`${_id}`}>
                 <Button variant="secondary" className="flex items-center">
                   <PlayCircle className="mr-2 h-5 w-5" />
                   Play all
@@ -51,14 +56,14 @@ export default function PlaylistCard({
       </Card>
 
       <div className="mt-2">
-        <h3 className="font-semibold text-md">{title} Clone</h3>
+        <h3 className="font-semibold text-md">{title}</h3>
         <div className="flex items-center text-sm text-gray-500">
-          <span>{channelName}</span>
+          <span>{description}</span>
           <CheckCircle2 className="h-4 w-4 ml-1 text-gray-400" />
           <span className="mx-1">•</span>
-          <span>Playlist</span>
+          <span>Duration : {totalDuration} </span>
         </div>
-        <Link to={`${part}`}>
+        <Link to={`${_id}`}>
           <div className="text-sm text-gray-500">View full playlist</div>
         </Link>
       </div>

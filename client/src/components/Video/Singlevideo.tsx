@@ -1,5 +1,6 @@
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 import { Button } from "../ui/button";
+import { useParams } from "react-router-dom";
 
 import {
   Accordion,
@@ -7,55 +8,57 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "../ui/accordion";
-import { ThumbsUp, Share2, MoreHorizontal } from "lucide-react";
+import { ThumbsUp} from "lucide-react";
 import Comment from "../Comments/Comments";
+import { useGetVideoById } from "../../hooks/video.hook";
+import VideoPlayer from "./VideoPlayer";
 
 export default function SingleVideo() {
+  const { videoId } = useParams();
+  
+  const { data: video,error,isError,isLoading } = useGetVideoById(videoId);
+  if(isLoading) return <div>Loading...</div>
+  if(isError) return <div>{error?.message}</div>
+
   return (
     <div className="lg:w-8/12">
-      <div className="aspect-video bg-gray-200 mb-4">
+      <div className="aspect-video  mb-4">
         {/* Video player container */}
         <div className="w-full h-full flex items-center justify-center text-2xl text-gray-500">
-          Video Player
+          <VideoPlayer videoUrl={video?.videoFile} thumbnailUrl={video?.thumbnail} />
         </div>
       </div>
-      <h1 className="text-2xl font-bold mb-2">Amazing Video Title</h1>
+      <h1 className="text-2xl font-bold mb-2">{ video?.title}</h1>
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-4 gap-4">
         <div className="flex items-center">
           <Avatar className="h-10 w-10 mr-4">
             <AvatarImage
-              src="/placeholder.svg?height=40&width=40"
+              src={video?.owner?.avatar}
               alt="Channel Name"
             />
             <AvatarFallback>CN</AvatarFallback>
           </Avatar>
           <div>
-            <h2 className="font-semibold">Channel Name</h2>
+            <h2 className="font-semibold">{video?.owner?.userName}</h2>
             <p className="text-sm text-gray-500">1M subscribers</p>
           </div>
         </div>
         <div className="flex items-center gap-2">
           <Button variant="outline">Subscribe</Button>
-          <Button variant="outline" size="icon">
-            <ThumbsUp className="h-4 w-4" />
+          <Button className="w-full p-2" variant="outline" size="icon">
+            <ThumbsUp className="h-4 w-4 mr-2" />
+            {video?.likesCount}
           </Button>
-          <Button variant="outline" size="icon">
-            <Share2 className="h-4 w-4" />
-          </Button>
-          <Button variant="outline" size="icon">
-            <MoreHorizontal className="h-4 w-4" />
-          </Button>
+          
         </div>
       </div>
-      <div className="mb-4 text-sm text-gray-500">100K views • 1 week ago</div>
+      <div className="mb-4 text-sm text-gray-500">{ video?.views} views • 1 week ago</div>
       <Accordion type="single" collapsible className="mb-8">
         <AccordionItem value="description">
           <AccordionTrigger>Description</AccordionTrigger>
           <AccordionContent>
             <p className="p-4">
-              This is the video description. It can contain multiple lines of
-              text describing the content of the video, providing additional
-              context, or including links to related resources.
+              {video?.description}
             </p>
           </AccordionContent>
         </AccordionItem>

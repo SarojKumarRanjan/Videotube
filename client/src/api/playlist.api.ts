@@ -95,7 +95,7 @@ export const getUserPlaylists = async (userId:string) => {
     try {
         const res = await API.get("/playlist/user/"+userId);
         const data = res.data;
-        return data;
+        return data?.data;
     } catch (error) {
         if (error instanceof AxiosError && error.response) {
         toast.error(
@@ -147,3 +147,22 @@ export const removeVideoFromPlaylist = async (playlistId:string,videoId:string) 
         throw error;
     }
     }
+
+export const getYourPlaylist = async() => {
+    try {
+        const res = await API.get("/playlist/playlists");
+        const data = res.data;
+        return data?.data;
+    } catch (error) {
+        if (error instanceof AxiosError && error.response) {
+        toast.error(
+            error.response.data?.error ||
+            "Something went wrong while getting your playlists"
+        );
+        } else {
+        toast.error("An unexpected error occurred while getting your playlists");
+        }
+        console.log(error);
+        throw error;
+    }
+}
