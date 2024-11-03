@@ -19,7 +19,7 @@ export const createPlaylist = async (playlistData:createPlaylisttype) => {
     try {
         const res = await API.post("/playlist/add",playlistData);
         const data = res.data;
-        return data;
+        return data?.data;
     } catch (error) {
         if (error instanceof AxiosError && error.response) {
         toast.error(
@@ -76,7 +76,7 @@ export const getPlaylistById = async (playlistId:string) => {
     try {
         const res = await API.get("/playlist/"+playlistId);
         const data = res.data;
-        return data;
+        return data?.data;
     } catch (error) {
         if (error instanceof AxiosError && error.response) {
         toast.error(

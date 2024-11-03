@@ -2,6 +2,7 @@
 import { Card, CardContent } from "../ui/card"
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar"
 import { Link } from "react-router-dom"
+import { timeAgo } from "../../lib/timeAgo"
 
 interface VideoCardProps {
   _id:string
@@ -10,7 +11,7 @@ interface VideoCardProps {
   channelName?: string
   channelAvatarUrl?: string
   views?: number
-  uploadedAt?: string
+  uploadedAt: string
   duration?: number
   
 }
@@ -56,7 +57,7 @@ export default function VideoCard({
               {channelName || "Channel Name"}
             </p>
             <p className="text-xs text-muted-foreground">
-              {views+" views" || "0 views"} • {uploadedAt || "Recently"}
+              {views+" views" || "0 views"} • {timeAgo(uploadedAt) || "Recently"}
             </p>
           </div>
         </div>

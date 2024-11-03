@@ -12,94 +12,50 @@ import PlaylistVideoCard from "./PlaylistVideoCard";
 import { PlayCircle, Plus, Pencil, Share2, MoreVertical } from "lucide-react";
 import { useParams } from "react-router-dom";
 import { ScrollArea } from "../ui/scroll-area";
+import { useGetPlaylist } from "../../hooks/playlist.hook";
 
 
 
-const playlistVideos  = [
-  {
-    id: "1",
-    title: "Web Scraping Full Course 2024 | Build and Deploy eCommerce Price Tracker",
-    channel: "JavaScript Mastery",
-    views: "348K views",
-    uploadTime: "1 year ago",
-    duration: "4:01:41",
-    thumbnail:
-      "https://images.pexels.com/photos/12909900/pexels-photo-12909900.jpeg?auto=compress&cs=tinysrgb&w=600&lazy=load",
-  },
-  {
-    id: "2",
-    title: "Not Enjoying Development?",
-    channel: "Striver",
-    views: "51K views",
-    uploadTime: "7 months ago",
-    duration: "10:44",
-    thumbnail:
-      "https://images.pexels.com/photos/372098/pexels-photo-372098.jpeg?auto=compress&cs=tinysrgb&w=600&lazy=load",
-  },
-  {
-    id: "3",
-    title: "Building Nextjs14 Website: Shadcn, Framer Motion, Tailwind & Typescript",
-    channel: "NewAwesomeTech",
-    views: "2.3K views",
-    uploadTime: "7 months ago",
-    duration: "3:02:42",
-    thumbnail:
-      "https://images.pexels.com/photos/372098/pexels-photo-372098.jpeg?auto=compress&cs=tinysrgb&w=600&lazy=load",
-  },
-  {
-    id: "4",
-    title: "Build & Deploy Full Stack E-Commerce Website + Admin Dashboard | Next.js, Stripe, Tailwind, MongoDB",
-    channel: "Code With Phuc",
-    views: "108K views",
-    uploadTime: "7 months ago",
-    duration: "10:20:31",
-    thumbnail:
-      "https://images.pexels.com/photos/361104/pexels-photo-361104.jpeg?auto=compress&cs=tinysrgb&w=600&lazy=load",
-  },
-  {
-    id: "1",
-    title: "Web Scraping Full Course 2024 | Build and Deploy eCommerce Price Tracker",
-    channel: "JavaScript Mastery",
-    views: "348K views",
-    uploadTime: "1 year ago",
-    duration: "4:01:41",
-    thumbnail:
-      "https://images.pexels.com/photos/12909900/pexels-photo-12909900.jpeg?auto=compress&cs=tinysrgb&w=600&lazy=load",
-  },
-  {
-    id: "2",
-    title: "Not Enjoying Development?",
-    channel: "Striver",
-    views: "51K views",
-    uploadTime: "7 months ago",
-    duration: "10:44",
-    thumbnail:
-      "https://images.pexels.com/photos/372098/pexels-photo-372098.jpeg?auto=compress&cs=tinysrgb&w=600&lazy=load",
-  },
-  {
-    id: "3",
-    title: "Building Nextjs14 Website: Shadcn, Framer Motion, Tailwind & Typescript",
-    channel: "NewAwesomeTech",
-    views: "2.3K views",
-    uploadTime: "7 months ago",
-    duration: "3:02:42",
-    thumbnail:
-      "https://images.pexels.com/photos/372098/pexels-photo-372098.jpeg?auto=compress&cs=tinysrgb&w=600&lazy=load",
-  },
-  {
-    id: "4",
-    title: "Build & Deploy Full Stack E-Commerce Website + Admin Dashboard | Next.js, Stripe, Tailwind, MongoDB",
-    channel: "Code With Phuc",
-    views: "108K views",
-    uploadTime: "7 months ago",
-    duration: "10:20:31",
-    thumbnail:
-      "https://images.pexels.com/photos/361104/pexels-photo-361104.jpeg?auto=compress&cs=tinysrgb&w=600&lazy=load",
-  },
-];
+interface Video {
+  _id: string;
+  videoFile:string
+  title: string;
+  description: string;
+  views: string;
+  createdAt: string;
+  duration: string;
+  thumbnail: string;
+  ownerName:string
+}
+
 
 function PlaylistVideoPage() {
-    const { playlistId } = useParams();
+    const { playlistId } = useParams<{playlistId:string}>();
+
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+//@ts-ignore
+    const {data,error,isError,isLoading} = useGetPlaylist(playlistId)
+
+    if(isError){
+        return(
+            <div>
+                {error?.message}
+            </div>
+        )
+    }
+
+    if(isLoading){
+        return(
+            <div>
+                loading....
+            </div>
+        )
+    }
+
+   // console.log(data);
+    
+
+
   return (
     <div className="container mx-auto px-4 py-8">
       <div className="flex flex-col md:flex-row gap-8">
@@ -107,15 +63,15 @@ function PlaylistVideoPage() {
           <Card>
             <CardContent className="p-0">
               <img
-                src="https://images.pexels.com/photos/14177806/pexels-photo-14177806.jpeg?auto=compress&cs=tinysrgb&w=600&lazy=load"
+                src={data?.coverImage}
                 alt="Playlist thumbnail"
                 className="w-full h-48 object-cover rounded-md"
               />
               <div className="p-4">
-                <h1 className="text-2xl font-bold mb-2">{playlistId}</h1>
-                <p className="text-sm text-gray-500 mb-2">by Saroj Ranjan</p>
+                <h1 className="text-2xl font-bold mb-2">{data?.name}</h1>
+                <p className="text-sm text-gray-500 mb-2">{data?.description}</p>
                 <p className="text-sm text-gray-500 mb-4">
-                  Private • 12 videos • 3 views
+                  Private • {data?.totalVideos} videos • {data?.totalViews} views
                 </p>
                 <div className="flex flex-wrap gap-2">
                   <Button className="flex-1">
@@ -142,7 +98,7 @@ function PlaylistVideoPage() {
           <div className="flex justify-between items-center mb-4">
             <Input
               className="max-w-sm"
-              placeholder="Find in playlist"
+              placeholder="Find in playlist feature coming soon...."
               type="search"
             />
             <Select>
@@ -162,8 +118,8 @@ function PlaylistVideoPage() {
           </div>
           <ScrollArea className="h-[calc(100vh-178px)]">
          
-          {playlistVideos.map((video) => (
-            <PlaylistVideoCard key={video.id} playlistVideo={video} />
+          {data?.videos.map((video:Video) => (
+            <PlaylistVideoCard key={video._id} playlistVideo={video} />
           ))}
             </ScrollArea>
          

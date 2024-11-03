@@ -15,13 +15,12 @@ function App() {
   //@ts-ignore
   const user = useSelector((state) => state?.auth?.authStatus)
   useEffect(() => {
-    if(!isFetching){
-      if(data && !user){
-        dispatch(setUser(data))
+    if (!isFetching && !user) {
+      if (data) {
+        dispatch(setUser(data));
       }
     }
-  },[data,isFetching,dispatch,user])
-  
+  }, [user,data]);
   return (
     <>
      <HomePage/>

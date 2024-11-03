@@ -27,8 +27,12 @@ export const useLogin = () => {
   };
   
   export const useLogout = () => {
+    const queryClient = useQueryClient();
     return useMutation({
       mutationFn: () => logout(),
+      onSuccess: () => {
+        queryClient.invalidateQueries({ queryKey: ["currentUser"] });
+      },
     });
   };
   

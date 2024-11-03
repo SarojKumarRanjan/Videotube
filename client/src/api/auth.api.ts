@@ -163,9 +163,10 @@ export const registerUser = async (data:registerUser):Promise<loginResponse> => 
 export const refreshAccessToken = async () => {
   console.log("refresh access token called");
   try {
-    const { data } = await API.post("/user/refresh-token");
-    console.log(data);
+    const res = await API.post("/users/refresh-token");
+    const data = res.data;
     return data?.data;
+    return data;
   } catch (error) {
     if (error instanceof AxiosError && error.response) {
         toast.error(error?.response?.data?.error||"error while refreshing access token")

@@ -1,6 +1,7 @@
 
 import { FC,ReactNode,useEffect } from "react"
 import GuestPage from "./GuestPage"
+import { useSelector } from "react-redux"
 
 
 interface AuthlayoutProps {
@@ -8,15 +9,18 @@ interface AuthlayoutProps {
     auth: boolean
     }
 
-const Authlayout:FC<AuthlayoutProps> = ({children,auth}) => {
+const Authlayout:FC<AuthlayoutProps> = ({children}) => {
+
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const authStatus = useSelector((state:any) => state?.auth?.authStatus)
 
     useEffect(() => {
-        console.log(auth);
         
-    }, [auth])
+        
+    }, [authStatus])
     return (
         <div>
-            {auth?children:<GuestPage/>}
+            {authStatus?children:<GuestPage/>}
         </div>
     )
 }

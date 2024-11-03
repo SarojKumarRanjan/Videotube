@@ -1,15 +1,19 @@
 import { Button } from "../ui/button";
 import { MoreVertical } from "lucide-react";
+import { Link } from "react-router-dom";
+import { timeAgo } from "../../lib/timeAgo";
 
 
 interface Video {
-  id: string;
+  _id: string;
+  videoFile:string
   title: string;
-  channel: string;
+  description: string;
   views: string;
-  uploadTime: string;
+  createdAt: string;
   duration: string;
   thumbnail: string;
+  ownerName:string
 }
 
 interface PlaylistVideoCardProps {
@@ -19,9 +23,10 @@ interface PlaylistVideoCardProps {
 
 export default function PlaylistVideoCard( {playlistVideo}:PlaylistVideoCardProps) {
   return (
+    <Link to={`/watch/${playlistVideo._id}`}>
     <div className="my-4">
       
-        <div key={playlistVideo.id} className="flex flex-col md:flex-row space-x-4">
+        <div key={playlistVideo._id} className="flex flex-col md:flex-row space-x-4">
           
           <div className="flex-shrink-0 relative">
             <img
@@ -35,9 +40,10 @@ export default function PlaylistVideoCard( {playlistVideo}:PlaylistVideoCardProp
           </div>
           <div className="flex-grow">
             <h3 className="font-semibold">{playlistVideo.title}</h3>
-            <p className="text-sm text-gray-500">{playlistVideo.channel}</p>
+            
+            <p className="text-sm text-gray-500">{playlistVideo.ownerName}</p>
             <p className="text-sm text-gray-500">
-              {playlistVideo.views} • {playlistVideo.uploadTime}
+              {playlistVideo.views} views • {timeAgo(playlistVideo.createdAt)}
             </p>
           </div>
           <Button variant="ghost" size="icon">
@@ -46,6 +52,7 @@ export default function PlaylistVideoCard( {playlistVideo}:PlaylistVideoCardProp
         </div>
       
     </div>
+    </Link>
     );
       }
 
