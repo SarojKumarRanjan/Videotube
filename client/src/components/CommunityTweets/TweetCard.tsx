@@ -4,6 +4,8 @@ import { Button } from "../ui/button"
 import { Card, CardContent, CardFooter, CardHeader } from "../ui/card"
 import { Input } from "../ui/input"
 import { ThumbsUp, MessageSquare, MoreVertical } from "lucide-react"
+import { useCommentLike } from "../../hooks/like.hook"
+import toast from "react-hot-toast"
 
 interface Comment {
   id: number
@@ -22,6 +24,7 @@ interface CommunityPostProps {
   image?: string
   likes: number
   comments: Comment[]
+  _id: string
 }
 
 export default function TweetCard({
@@ -32,7 +35,17 @@ export default function TweetCard({
   likes,
   comments,
   timestamp,
+  _id
 }: CommunityPostProps) {
+
+  //console.log("Comments:", comments);
+
+  console.log(likes);
+  
+  
+
+  const {mutateAsync:commentLikeMutation} = useCommentLike()
+
   const [showAllComments, setShowAllComments] = React.useState(false)
   const [newComment, setNewComment] = React.useState("")
 
@@ -40,6 +53,16 @@ export default function TweetCard({
     e.preventDefault()
     console.log("New comment:", newComment)
     setNewComment("")
+  }
+
+  const commentLikeHandler = async() => {
+    //console.log("Comment liked");
+    
+   const res =   await commentLikeMutation(_id)
+   if(res){
+       toast.success(res?.message);
+   }
+   console.log(res);
   }
 
   return (
@@ -69,7 +92,7 @@ export default function TweetCard({
         )}
         <div className="flex items-center space-x-4">
           <Button variant="ghost" size="sm" className="flex items-center space-x-2">
-            <ThumbsUp className="h-4 w-4" />
+            <ThumbsUp onClick={commentLikeHandler} className="h-4 w-4" />
             <span>{likes}</span>
           </Button>
           <Button variant="ghost" size="sm" className="flex items-center space-x-2">

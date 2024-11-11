@@ -98,9 +98,9 @@ const Router = createBrowserRouter([
       {
         path: "watch/:videoId",
         element: (
-          <Authlayout auth={true}>
+          
             <SinglevideoPage />
-          </Authlayout>
+          
         ),
       },
       {

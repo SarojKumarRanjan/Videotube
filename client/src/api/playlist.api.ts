@@ -11,7 +11,7 @@ const API = axios.create({
 });
 
 interface createPlaylisttype{
-    title?:string
+    name?:string
     description?:string
 }
 
@@ -112,7 +112,7 @@ export const getUserPlaylists = async (userId:string) => {
 
 export const addVideoToPlaylist = async (playlistId:string,videoId:string) => {
     try {
-        const res = await API.post("/playlist/"+playlistId+"video"+videoId);
+        const res = await API.post("/playlist/"+playlistId+"/video/"+videoId);
         const data = res.data;
         return data;
     } catch (error) {
@@ -131,7 +131,7 @@ export const addVideoToPlaylist = async (playlistId:string,videoId:string) => {
 
 export const removeVideoFromPlaylist = async (playlistId:string,videoId:string) => {
     try {
-        const res = await API.delete("/playlist/"+playlistId+"video"+videoId);
+        const res = await API.delete("/playlist/"+playlistId+"/video/"+videoId);
         const data = res.data;
         return data;
     } catch (error) {

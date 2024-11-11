@@ -162,3 +162,21 @@ export const updateWatchHistory = async (videoId:string) =>{
         throw error;
     }
 }
+export const getRecomendedVideo = async(videoId:string) =>{
+    try {
+        const res = await API.get("/video/get-recommended-videos/"+videoId);
+        const data = res.data;
+        return data?.data;
+    } catch (error) {
+        if (error instanceof AxiosError && error.response) {
+        toast.error(
+            error.response.data?.error ||
+            "Something went wrong while getting recommended video"
+        );
+        } else {
+        toast.error("An unexpected error occurred while getting recommended video");
+        }
+        console.log(error);
+        throw error;
+    }
+}

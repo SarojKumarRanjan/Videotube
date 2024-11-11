@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/ban-ts-comment */
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 import { Button } from "../ui/button";
 import { useParams } from "react-router-dom";
@@ -19,17 +20,19 @@ export default function SingleVideo() {
 
   const { mutateAsync:likeVideo } = useVideoLike();
 
-  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-  //@ts-ignore
+ 
+  
 
 const handleLike = async () => {
     try {
+      //@ts-ignore
       await likeVideo(videoId);
     } catch (error) {
       console.log(error);
     }
   }
 
+  //@ts-ignore
   const { data: video,error,isError,isLoading } = useGetVideoById(videoId);
   if(isLoading) return <div>Loading...</div>
   if(isError) return <div>{error?.message}</div>
@@ -59,10 +62,16 @@ const handleLike = async () => {
         </div>
         <div className="flex items-center gap-2">
           <Button variant="outline">Subscribe</Button>
-          <Button onClick={handleLike} className="w-full p-2" variant="outline" size="icon">
-            <ThumbsUp className="h-4 w-4 mr-2" />
-            {video?.likesCount}
-          </Button>
+          <Button
+    onClick={handleLike}
+    className="w-full p-2"
+    variant={video?.isLiked ? "default" : "outline"}
+    size="icon"
+  >
+    <ThumbsUp className="h-4 w-4 mr-2" />
+    {video?.likesCount}
+  </Button>
+          
           
         </div>
       </div>

@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/ban-ts-comment */
 import { Button } from "../ui/button";
 import { Card, CardContent } from "../ui/card";
 import { Input } from "../ui/input";
@@ -32,7 +33,7 @@ interface Video {
 function PlaylistVideoPage() {
     const { playlistId } = useParams<{playlistId:string}>();
 
-// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+
 //@ts-ignore
     const {data,error,isError,isLoading} = useGetPlaylist(playlistId)
 
@@ -119,7 +120,8 @@ function PlaylistVideoPage() {
           <ScrollArea className="h-[calc(100vh-178px)]">
          
           {data?.videos.map((video:Video) => (
-            <PlaylistVideoCard key={video._id} playlistVideo={video} />
+            //@ts-ignore
+            <PlaylistVideoCard key={video._id} playlistVideo={video} playlistId={playlistId} />
           ))}
             </ScrollArea>
          

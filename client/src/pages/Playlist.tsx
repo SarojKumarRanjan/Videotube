@@ -16,7 +16,7 @@ interface PlaylistResponse {
 function Playlist() {
   
   const{data,error,isError,isLoading} = useGetYourPlaylist()
-  console.log(data);
+  //console.log(data);
 
   if(isError){
     return(

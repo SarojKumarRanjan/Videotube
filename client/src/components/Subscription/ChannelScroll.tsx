@@ -2,36 +2,28 @@
 import { ScrollArea, ScrollBar } from "../ui/scroll-area";
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 import { Link } from "react-router-dom";
+import { useGetSubscribedChannels } from "../../hooks/subscription.hook";
 
-interface Channel {
-  id: string;
-  name: string;
+type Channel  = {
+  _id: string;
+  fullName: string;
   avatar: string;
 }
 
-const subscribedChannels: Channel[] = [
-  { id: "1", name: "Tech Talk", avatar: "https://images.pexels.com/photos/10144922/pexels-photo-10144922.jpeg?auto=compress&cs=tinysrgb&w=600&lazy=load" },
-  { id: "2", name: "Cooking Master", avatar: "https://images.pexels.com/photos/10144922/pexels-photo-10144922.jpeg?auto=compress&cs=tinysrgb&w=600&lazy=load" },
-  { id: "3", name: "Travel Diaries", avatar: "https://images.pexels.com/photos/10144922/pexels-photo-10144922.jpeg?auto=compress&cs=tinysrgb&w=600&lazy=load" },
-  { id: "4", name: "Fitness First", avatar: "https://images.pexels.com/photos/10144922/pexels-photo-10144922.jpeg?auto=compress&cs=tinysrgb&w=600&lazy=load" },
-  { id: "5", name: "Music Mania", avatar: "https://images.pexels.com/photos/10144922/pexels-photo-10144922.jpeg?auto=compress&cs=tinysrgb&w=600&lazy=load" },
-  { id: "6", name: "Science Explained", avatar: "https://images.pexels.com/photos/10144922/pexels-photo-10144922.jpeg?auto=compress&cs=tinysrgb&w=600&lazy=load" },
-  { id: "7", name: "Art & Craft", avatar: "https://images.pexels.com/photos/10144922/pexels-photo-10144922.jpeg?auto=compress&cs=tinysrgb&w=600&lazy=load" },
-  { id: "8", name: "Gaming Zone", avatar: "https://images.pexels.com/photos/10144922/pexels-photo-10144922.jpeg?auto=compress&cs=tinysrgb&w=600&lazy=load" },
-  { id: "9", name: "Tech Talk", avatar: "https://images.pexels.com/photos/10144922/pexels-photo-10144922.jpeg?auto=compress&cs=tinysrgb&w=600&lazy=load" },
-  { id: "1", name: "Tech Talk", avatar: "https://images.pexels.com/photos/10144922/pexels-photo-10144922.jpeg?auto=compress&cs=tinysrgb&w=600&lazy=load" },
-  { id: "2", name: "Cooking Master", avatar: "https://images.pexels.com/photos/10144922/pexels-photo-10144922.jpeg?auto=compress&cs=tinysrgb&w=600&lazy=load" },
-  { id: "3", name: "Travel Diaries", avatar: "https://images.pexels.com/photos/10144922/pexels-photo-10144922.jpeg?auto=compress&cs=tinysrgb&w=600&lazy=load" },
-  { id: "4", name: "Fitness First", avatar: "https://images.pexels.com/photos/10144922/pexels-photo-10144922.jpeg?auto=compress&cs=tinysrgb&w=600&lazy=load" },
-  { id: "5", name: "Music Mania", avatar: "https://images.pexels.com/photos/10144922/pexels-photo-10144922.jpeg?auto=compress&cs=tinysrgb&w=600&lazy=load" },
-  { id: "6", name: "Science Explained", avatar: "https://images.pexels.com/photos/10144922/pexels-photo-10144922.jpeg?auto=compress&cs=tinysrgb&w=600&lazy=load" },
-  { id: "7", name: "Art & Craft", avatar: "https://images.pexels.com/photos/10144922/pexels-photo-10144922.jpeg?auto=compress&cs=tinysrgb&w=600&lazy=load" },
-  { id: "8", name: "Gaming Zone", avatar: "https://images.pexels.com/photos/10144922/pexels-photo-10144922.jpeg?auto=compress&cs=tinysrgb&w=600&lazy=load" },
-  { id: "9", name: "Tech Talk", avatar: "https://images.pexels.com/photos/10144922/pexels-photo-10144922.jpeg?auto=compress&cs=tinysrgb&w=600&lazy=load" },
-];
+interface singleChannel{
+  subscribedChannel:Channel;
+}
+
 
 export default function SubscriptionPage() {
+
+  const { data: subscribedChannel,error,isError,isLoading } = useGetSubscribedChannels();
   
+ //console.log(subscribedChannel[0]);
+  
+ if(isLoading) return <div>Loading...</div>
+  if(isError) return <div>{error.message}</div>
+  if(subscribedChannel.length === 0) return <div>No Subscribed Channels Found</div>
 
   return (
     <div className=" mx-auto px-6 py-4">
@@ -42,15 +34,15 @@ export default function SubscriptionPage() {
       <ScrollArea className="w-[272px] md:w-[500px] lg:w-[700px] xl:w-[1100px] 2xl:w-[1184px] whitespace-nowrap rounded-md border">
       <div className="flex  space-x-2 p-2">
         {
-            subscribedChannels.map((channel) => (
-                <Link to={`/channel/${channel.id}`}>
-                <div key={channel.id} className=" flex flex-col items-center space-y-2 min-w-[100px]">
+            subscribedChannel.map((channel:singleChannel) => (
+                <Link to={`/channel/${channel?.subscribedChannel?._id}`}>
+                <div key={channel?.subscribedChannel?._id} className=" flex flex-col items-center space-y-2 min-w-[100px]">
                    
                   <Avatar className="h-16 w-16">
-                    <AvatarImage src={channel.avatar} alt={channel.name} />
-                    <AvatarFallback>{channel.name[0]}</AvatarFallback>
+                    <AvatarImage src={channel?.subscribedChannel?.avatar} alt={channel?.subscribedChannel?.fullName} />
+                    <AvatarFallback>{channel?.subscribedChannel?.fullName}</AvatarFallback>
                   </Avatar>
-                  <span className="text-sm font-medium text-center">{channel.name}</span>
+                  <span className="text-sm font-medium text-center">{channel?.subscribedChannel?.fullName}</span>
                    
                 </div>
                  </Link>

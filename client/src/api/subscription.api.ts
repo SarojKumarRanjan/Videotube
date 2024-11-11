@@ -28,11 +28,13 @@ export const toggleSubscribe = async (channelId:string) => {
     }
     }
 
-export const getSubscribedChannels = async (subscriberId:string) => {
+export const getSubscribedChannels = async () => {
     try {
-        const res = await API.get("/subscription/subscribed"+subscriberId);
+        const res = await API.get("/subscription/subscribed");
         const data = res.data;
-        return data;
+        return data?.data;
+        //console.log(data);
+        
     } catch (error) {
         if (error instanceof AxiosError && error.response) {
         toast.error(
@@ -65,3 +67,23 @@ export const getSubscribers = async (channelId:string) => {
         throw error;
     }
     }
+
+
+export const getYourSubscribedVideos = async() => {
+    try {
+        const res = await API.get("/video/get-subscribed-channel-videos");
+        const data = res.data;
+        return data;
+    } catch (error) {
+        if (error instanceof AxiosError && error.response) {
+        toast.error(
+            error.response.data?.error ||
+            "Something went wrong while getting subscribed videos"
+        );
+        } else {
+        toast.error("An unexpected error occurred while getting subscribed videos");
+        }
+        console.log(error);
+        throw error;
+    }
+}

@@ -36,6 +36,8 @@ export const getLikedVideo = async() =>{
 
 
 export const commentLike = async(commentId:string) =>{
+    //console.log(commentId);
+    
     try {
         const res = await API.post("/like/comment/"+commentId);
         const data = res.data;
@@ -56,10 +58,9 @@ export const commentLike = async(commentId:string) =>{
 }
 
 
-let cnt = 0;
+
 export const videoLike = async(videoId:string) =>{
-cnt++;
-console.log(cnt);
+
 
     try {
         const res = await API.post("/like/video/"+videoId);

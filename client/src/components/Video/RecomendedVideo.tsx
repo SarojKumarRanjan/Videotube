@@ -1,82 +1,44 @@
+/* eslint-disable @typescript-eslint/ban-ts-comment */
+import { useParams } from "react-router-dom";
+import { useGetRecomendedVideos } from "../../hooks/video.hook";
+import { timeAgo } from "../../lib/timeAgo";
+import { Link } from "react-router-dom";
 
-
-interface Video {
-  id: number;
-  title: string;
-  thumbnail: string;
-  channel: string;
-  views: string;
-  timestamp: string;
+type owner = {
+  _id:string
+  userName:string
+  avatar:string
 }
 
-const recommendedVideos: Video[] = [
-  {
-    id: 1,
-    title: "10 Amazing Facts About Space",
-    thumbnail: "https://images.pexels.com/photos/1323550/pexels-photo-1323550.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1",
-    channel: "Space Explorers",
-    views: "1.2M views",
-    timestamp: "2 weeks ago",
-  },
-  {
-    id: 1,
-    title: "10 Amazing Facts About Space",
-    thumbnail: "https://images.pexels.com/photos/1323550/pexels-photo-1323550.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1",
-    channel: "Space Explorers",
-    views: "1.2M views",
-    timestamp: "2 weeks ago",
-  },
-  {
-    id: 1,
-    title: "10 Amazing Facts About Space",
-    thumbnail: "https://images.pexels.com/photos/1323550/pexels-photo-1323550.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1",
-    channel: "Space Explorers",
-    views: "1.2M views",
-    timestamp: "2 weeks ago",
-  },
-  {
-    id: 1,
-    title: "10 Amazing Facts About Space",
-    thumbnail: "https://images.pexels.com/photos/1323550/pexels-photo-1323550.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1",
-    channel: "Space Explorers",
-    views: "1.2M views",
-    timestamp: "2 weeks ago",
-  },
-  {
-    id: 1,
-    title: "10 Amazing Facts About Space",
-    thumbnail: "https://images.pexels.com/photos/1323550/pexels-photo-1323550.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1",
-    channel: "Space Explorers",
-    views: "1.2M views",
-    timestamp: "2 weeks ago",
-  },
-  {
-    id: 1,
-    title: "10 Amazing Facts About Space",
-    thumbnail: "https://images.pexels.com/photos/1323550/pexels-photo-1323550.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1",
-    channel: "Space Explorers",
-    views: "1.2M views",
-    timestamp: "2 weeks ago",
-  },
-  {
-    id: 1,
-    title: "10 Amazing Facts About Space",
-    thumbnail: "https://images.pexels.com/photos/1323550/pexels-photo-1323550.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1",
-    channel: "Space Explorers",
-    views: "1.2M views",
-    timestamp: "2 weeks ago",
-  },
-  
-  // Add more recommended videos as needed
-];
-
+interface Video {
+_id:string
+videoFile:string
+thumbnail: string;
+title: string;
+owner:string
+description:string
+duration:number
+views:number
+isPublished:boolean
+createdAt:string
+updatedAt:string
+__v?:number
+ownerDetails:owner
+}
 function RecomendedVideo() {
+  const { videoId } = useParams<{ videoId: string }>();
+  //@ts-ignore
+  const { data: recommendedVideos, error, isError, isLoading } = useGetRecomendedVideos(videoId);
+
+  if (isLoading) return <div>Loading...</div>;
+  if (isError) return <div>{error?.message}</div>;
   return (
     <div className="lg:w-3/12">
       <h3 className="text-xl font-bold mb-4">Recommended Videos</h3>
       
-        {recommendedVideos.map((video) => (
-          <div key={video.id} className="flex gap-2 mb-4">
+        {recommendedVideos.map((video:Video) => (
+          <Link to={`/watch/${video?._id}`}>
+          <div key={video._id} className="flex gap-2 mb-4">
             <img
               src={video.thumbnail}
               alt={video.title}
@@ -84,12 +46,13 @@ function RecomendedVideo() {
             />
             <div>
               <h4 className="mb-[3px] text-sm font-semibold line-clamp-2">{video.title}</h4>
-              <p className="text-sm mb-[1px] text-gray-500">{video.channel}</p>
+              <p className="text-sm mb-[1px] text-gray-500">{video?.ownerDetails?.userName}</p>
               <p className="text-xs text-gray-500">
-                {video.views} • {video.timestamp}
+                {video.views} views • {timeAgo(video.createdAt)}
               </p>
             </div>
           </div>
+          </Link>
         ))}
       
     </div>
