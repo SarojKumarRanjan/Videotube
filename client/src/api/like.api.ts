@@ -81,3 +81,24 @@ export const videoLike = async(videoId:string) =>{
         
     }
 }
+
+
+export const tweetLike = async(tweetId:string) =>{
+    try {
+        const res = await API.post("/like/tweet/"+tweetId);
+        const data = res.data;
+        return data;
+    } catch (error) {
+        if(error instanceof AxiosError && error.response){
+            toast.error(
+                error.response.data?.error ||
+                "Something went wrong while liking tweet"
+            );
+            } else {
+            toast.error("An unexpected error occurred while liking tweet");
+            }
+            console.log(error);
+            throw error;
+        
+    }
+}

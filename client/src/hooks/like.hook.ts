@@ -1,6 +1,6 @@
 import { getLikedVideo } from "../api/like.api";
 import { useQuery,useMutation } from "@tanstack/react-query";
-import { videoLike,commentLike } from "../api/like.api";
+import { videoLike,commentLike ,tweetLike} from "../api/like.api";
 import { useQueryClient } from "@tanstack/react-query";
 
 export const useGetLikedVideo = () => {
@@ -29,14 +29,27 @@ export const useVideoLike = () =>{
     })
 }
 
+export const useTweetLike = () =>{
+    const queryClient = useQueryClient();
+    return useMutation({
+        mutationFn:(tweetId:string) => tweetLike(tweetId),
+        onSuccess:() => {
+            //console.log(data);
+            queryClient.invalidateQueries({
+                queryKey:["tweets"]
+            })
+        },
+        retry:0
+    })
+}
+
 export const useCommentLike = () =>{
     const queryClient = useQueryClient();
     return useMutation({
         mutationFn:(commentId:string) => commentLike(commentId),
         onSuccess:() => {
-            //console.log(data);
             queryClient.invalidateQueries({
-                queryKey:["tweets"]
+                queryKey:["comments"]
             })
         },
         retry:0

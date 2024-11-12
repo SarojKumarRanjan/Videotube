@@ -66,7 +66,7 @@ export default function Tweet() {
     if(isError){
         return <div>{error?.message}</div>
     }
-   console.log(tweets);
+   //console.log(tweets);
     return (
         <div className="m-3">
           {
