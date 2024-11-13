@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/ban-ts-comment */
 import { useState } from "react";
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 import { Button } from "../ui/button";
@@ -7,6 +8,7 @@ import { ThumbsUp, MessageSquare, MoreVertical } from "lucide-react";
 import { useTweetLike } from "../../hooks/like.hook";
 import toast from "react-hot-toast";
 import { useDeleteTweet,useUpdateTweet } from "../../hooks/tweet.hook";
+import { useSelector } from "react-redux";
 import {
   DropdownMenu,
   DropdownMenuTrigger,
@@ -24,6 +26,8 @@ import {
   DialogFooter,
 } from "../ui/dialog";
 import { Label } from "../ui/label";
+import TweetComment from "./TweetComment";
+
 
 
 interface Comment {
@@ -44,6 +48,7 @@ interface CommunityPostProps {
   likes: number;
   comments: Comment[];
   _id: string;
+  ownerId: string;
 }
 
 export default function TweetCard({
@@ -55,21 +60,23 @@ export default function TweetCard({
   comments,
   timestamp,
   _id,
+  ownerId,
 }: CommunityPostProps) {
+
+  //@ts-ignore
+const userId = useSelector((state) => state?.auth?.user?.data?.user?._id);
+
   const { mutateAsync: tweetLike } = useTweetLike();
   const { mutateAsync: tweetDelete } = useDeleteTweet();
   const { mutateAsync: tweetUpdate } = useUpdateTweet();
 
-  const [showAllComments, setShowAllComments] = useState(false);
-  const [newComment, setNewComment] = useState("");
+ //console.log(ownerId!==userId);
+ 
+  
   const [showModal, setShowModal] = useState(false);
   const [newContent, setNewContent] = useState(content);
 
-  const handleNewComment = (e: React.FormEvent) => {
-    e.preventDefault();
-    console.log("New comment:", newComment);
-    setNewComment("");
-  };
+ 
 
   const commentLikeHandler = async () => {
     const res = await tweetLike(_id);
@@ -89,11 +96,11 @@ export default function TweetCard({
     
     setShowModal(false);
     const res = await tweetUpdate({tweetId:_id,content:newContent});
-    console.log(res);
+    //console.log(res);
     if (res) {
      
       
-      toast.success(res);
+      toast.success(res?.message);
     }
   };
 
@@ -125,8 +132,8 @@ export default function TweetCard({
               </div>
             </div>
             <DropdownMenu>
-              <DropdownMenuTrigger>
-                <Button variant="ghost" size="icon" className="ml-auto">
+              <DropdownMenuTrigger asChild>
+                <Button disabled={ownerId!==userId}  variant="ghost" size="icon" className="ml-auto">
                   <MoreVertical className="h-4 w-4" />
                 </Button>
               </DropdownMenuTrigger>
@@ -174,65 +181,7 @@ export default function TweetCard({
           </div>
         </CardContent>
         <CardFooter className="flex flex-col items-start">
-          <form onSubmit={handleNewComment} className="w-full mb-4">
-            <div className="flex items-center space-x-2">
-              <Avatar className="h-8 w-8">
-                <AvatarImage
-                  src="/placeholder.svg?height=32&width=32"
-                  alt="Your Avatar"
-                />
-                <AvatarFallback>YA</AvatarFallback>
-              </Avatar>
-              <Input
-                placeholder="Add a comment..."
-                value={newComment}
-                onChange={(e) => setNewComment(e.target.value)}
-                className="flex-grow"
-              />
-              <Button type="submit" size="sm">
-                Post
-              </Button>
-            </div>
-          </form>
-          {comments.slice(0, showAllComments ? undefined : 3).map((comment) => (
-            <div key={comment.id} className="w-full mb-4">
-              <div className="flex items-start space-x-2">
-                <Avatar className="h-8 w-8">
-                  <AvatarImage src={comment.avatar} alt={comment.user} />
-                  <AvatarFallback>{comment.user[0]}</AvatarFallback>
-                </Avatar>
-                <div className="flex-grow">
-                  <p className="font-semibold">
-                    {comment.user}{" "}
-                    <span className="font-normal text-sm text-muted-foreground">
-                      {comment.timestamp}
-                    </span>
-                  </p>
-                  <p>{comment.content}</p>
-                  <div className="flex items-center space-x-2 mt-1">
-                    <Button variant="ghost" size="sm" className="h-auto p-0">
-                      <ThumbsUp className="h-4 w-4 mr-1" />
-                      {comment.likes}
-                    </Button>
-                    <Button variant="ghost" size="sm" className="h-auto p-0">
-                      Reply
-                    </Button>
-                  </div>
-                </div>
-              </div>
-            </div>
-          ))}
-          {comments.length > 3 && (
-            <Button
-              variant="link"
-              onClick={() => setShowAllComments(!showAllComments)}
-              className="mt-2"
-            >
-              {showAllComments
-                ? "Show fewer comments"
-                : `View all ${comments.length} comments`}
-            </Button>
-          )}
+        <TweetComment avatar={authorAvatar} comments={comments} />
         </CardFooter>
       </Card>
 
