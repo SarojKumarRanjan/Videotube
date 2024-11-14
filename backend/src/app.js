@@ -1,7 +1,7 @@
 import express from "express";
 import cors from "cors";
 import cookieparser from "cookie-parser";
-
+import {ApiError} from "./utils/errorHandler.js"
 import { LIMIT_DATA } from "./constants.js";
 
 const app = express();
@@ -22,7 +22,12 @@ app.use(express.static("public"));
 app.use(cookieparser());
 
 
-const errorHandler = (err, _, res, _) => {
+app.use((req, res, next) => {
+  res.setHeader("Content-Type", "application/json");
+  next();
+});
+
+const errorHandler = (err,req, res, next) => {
   if (err instanceof ApiError) {
     res.status(err.statusCode).json({
       success: false,

@@ -19,14 +19,15 @@ const toggleVIdeoLike = asyncHandler(async(req,res) =>{
      if(likedVideo){
          await Like.findByIdAndDelete(likedVideo._id)
          return res.status(200).json(
-             new ApiResponse(200,null,"video unliked")
+             new ApiResponse(200,videoId,"video unliked")
          )
      }else{
          const newLike = new Like({video:videoId,likedBy:userId})
          await newLike.save({validateBeforeSave:false})
-         return res.status(200).json( new ApiResponse(200,null,"video liked"))
+         return res.status(200).json( new ApiResponse(200,videoId,"video liked"))
      }
    } catch (error) {
+    
      throw new ApiError(500,error.message+" error in video like");
     
    }
@@ -52,16 +53,21 @@ const toggleCommentLike = asyncHandler(async(req,res)=> {
      const userId = req?.user?._id;
  
      const commentLike = await Like.findOne({comment:commentId,likedBy:userId})
+ //console.log(commentLike);
  
      if(commentLike){
-         await Like.findByIdAndDelete(commentLike._id)
+       const likerst =   await Like.findByIdAndDelete(commentLike._id)
+       //console.log("like delete"+likerst);
+       
          return res.status(200).json(
-             new ApiResponse(200,null,"comment unliked")
+             new ApiResponse(200,commentId,"comment disliked")
          )
      }else{
          const newLike = new Like({comment:commentId,likedBy:userId})
+         //console.log("new like"+newLike);
+         
          await newLike.save({validateBeforeSave:false})
-         return res.status(200).json(new ApiResponse(200,null,"comment liked"))
+         return res.status(200).json(new ApiResponse(200,commentId,"comment liked"))
      }
    } catch (error) {
      throw new ApiError(500,error.message+" error in comment like");
@@ -86,18 +92,18 @@ const toggleCommentLike = asyncHandler(async(req,res)=> {
         }
         const userId = req?.user?._id;
     
-        const tweetLike = await Like.findOne({tweet:tweetId,likedByUser:userId});
+        const tweetLike = await Like.findOne({tweet:tweetId,likedBy:userId});
     
         if(tweetLike){
             await Like.findByIdAndDelete(tweetLike._id)
             return res.status(200   ).json(
-                new ApiResponse(200,null,"tweet unliked")
+                new ApiResponse(200,tweetId,"tweet unliked")
             )
         }else{
             const newLike = new Like({tweet:tweetId,likedBy:userId})
             await newLike.save({validateBeforeSave:false})
             return res.status(200).json(
-                new ApiResponse(200,null,"tweet liked")
+                new ApiResponse(200,tweetId,"tweet liked")
             )
         }
     } catch (error) {
@@ -107,95 +113,86 @@ const toggleCommentLike = asyncHandler(async(req,res)=> {
  })
 
 
- const getLikedVideo = asyncHandler(async(req,res)=>{
-    // Logic to get liked videos goes here
-    // Retrieve user id from request parameters
-    // Find all likes where the user has liked a video
-    // Fetch the video details for each like
-    // Return an array of video details
+ const getLikedVideo = asyncHandler(async (req, res) => {
     try {
-
-        const userId = req.user?._id;
-        const likedVideos = await Like.aggregate([
-            {
-                $match:{likedBy:userId}
-            },
-            {
-                $lookup:{
-                    from:"videos",
-                    localField:"video",
-                    foreignField:"_id",
-                    as:"likedVideo",
-                    pipeline:[
-                        {
-                            $match:{
-                                isPublished: true 
-                            }
-                        },
-                        {
-                            $lookup:{
-                                from:"users",
-                                localField:"owner",
-                                foreignField:"_id",
-                                as:"ownerDetails"
-                            }
-                        },
-                        {
-                            $unwind:"$ownerDetails"
-                        }
-                    ]
+      const userId = req.user?._id;
+      const likedVideos = await Like.aggregate([
+        {
+          $match: { likedBy: userId }
+        },
+        {
+          $lookup: {
+            from: "videos",
+            localField: "video",
+            foreignField: "_id",
+            as: "likedVideo",
+            pipeline: [
+              {
+                $match: {
+                  isPublished: true
                 }
-            },
-            {
-                $unwind:"$likedVideo"
-            },
-            {
-                $sort:{
-                    createdAt: -1
+              },
+              {
+                $lookup: {
+                  from: "users",
+                  localField: "owner",
+                  foreignField: "_id",
+                  as: "ownerDetails"
                 }
-            },
-            {
-                $project: {
-                    _id: 0,
-                    likedVideo: {
-                      _id: 1,
-                      videoFile: 1,
-                      thumbnail: 1,
-                      owner: 1,
-                      title: 1,
-                      description: 1,
-                      views: 1,
-                      duration: 1,
-                      createdAt: 1,
-                      isPublished: 1,
-                      ownerDetails: {
-                        userName: 1,
-                        fullName: 1,
-                        avatar: 1,
-                      },
-                    },
-                  },
+              },
+              {
+                $unwind: "$ownerDetails"
+              }
+            ]
+          }
+        },
+        {
+          $unwind: "$likedVideo"
+        },
+        {
+          $project: {
+            _id: 0,
+            likedVideo: {
+              _id: 1,
+              videoFile: 1,
+              thumbnail: 1,
+              owner: 1,
+              title: 1,
+              description: 1,
+              views: 1,
+              duration: 1,
+              createdAt: 1,
+              isPublished: 1,
+              ownerDetails: {
+                userName: 1,
+                fullName: 1,
+                avatar: 1
+              }
             }
-
-        ]);
-
-        if (!likedVideos) {
-            throw new ApiError(404, "error in finding liked videos");
-            
+          }
+        },
+        {
+          $replaceRoot: { newRoot: "$likedVideo" }
+        },
+        {
+          $sort: {
+            createdAt: -1
+          }
         }
-
-        return res.status(200).json(
-            new ApiResponse(200,likedVideos,"Liked videos")
-        )
-        
-
-
-        
+      ]);
+  
+      if (!likedVideos) {
+        throw new ApiError(404, "Error in finding liked videos");
+      }
+  
+      return res.status(200).json(
+        new ApiResponse(200, likedVideos, "Liked videos")
+      );
     } catch (error) {
-        throw new ApiError(500,error.message || " error in getting liked videos");
-        
+      throw new ApiError(500, error.message || "Error in getting liked videos");
     }
- })
+  });
+  
 
  
 

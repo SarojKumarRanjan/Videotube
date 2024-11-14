@@ -103,13 +103,13 @@ const loginUser = asyncHandler(async (req, res) => {
       throw new ApiError(400, "email or userName is required");
     }
 
-    console.log(userName,password);
+    //console.log(userName,password);
 
     const currentUser = await User.findOne({
       $or: [{ userName }, { email }],
     });
 
-    console.log(currentUser);
+    //console.log(currentUser);
 
     if (!currentUser) {
       throw new ApiError(404, "user does not exist");
@@ -125,6 +125,9 @@ const loginUser = asyncHandler(async (req, res) => {
 
     const { accessToken, refreshToken } =
       await generateAccessTokenAndrefreshToken(currentUser._id);
+
+      console.log("this is login time refresh token",refreshToken);
+      
 
     const loggedInUser = await User.findById(currentUser._id).select([
       "-password",
@@ -200,7 +203,12 @@ const refreshAccessToken = asyncHandler(async (req, res) => {
       throw new ApiError(401, "Invalid refreshToken");
     }
 
-    if (incomingRefreshToken !== user?.refreshToken) {
+    console.log(`incomingRefreshToken`, incomingRefreshToken);
+    console.log(`user.refreshToken`, user.refreshToken);
+    
+    
+
+    if (incomingRefreshToken != user?.refreshToken) {
       throw new ApiError(401, "Refresh token expired please login again");
     }
 
@@ -229,7 +237,7 @@ const refreshAccessToken = asyncHandler(async (req, res) => {
   } catch (error) {
     throw new ApiError(
       500,
-      "Internal server error while refreshing token " + error?.message
+        error?.message
     );
   }
 });
@@ -456,62 +464,92 @@ const getUserChannelProfile = asyncHandler(async (req, res) => {
 });
 
 const getWatchHistory = asyncHandler(async (req, res) => {
-  const user = await User.aggregate([
-    {
-      $match: {
-        _id: new mongoose.Types.ObjectId(req.user._id),
+  try {
+    const userId = new mongoose.Types.ObjectId(req.user._id);
+    const watchHistory = await User.aggregate([
+      {
+        $match: { _id: userId }
       },
-    },
-    {
-      $lookup: {
-        from: "videos",
-        localField: "watchHistory",
-        foreignField: "_id",
-        as: "watchHistory",
-        pipeline: [
-          {
-            $lookup: {
-              from: "videos",
-              localField: "owner",
-              foreignField: "_id",
-              as: "owner",
-              pipeline: [
-                {
-                  $project: {
-                    fullName: 1,
-                    userName: 1,
-                    avatar: 1,
-                  },
-                },
-              ],
+      {
+        $lookup: {
+          from: "videos",
+          localField: "watchHistory",
+          foreignField: "_id",
+          as: "watchHistory",
+          pipeline: [
+            {
+              $lookup: {
+                from: "users",
+                localField: "owner",
+                foreignField: "_id",
+                as: "ownerDetails",
+                pipeline: [
+                  {
+                    $project: {
+                      fullName: 1,
+                      userName: 1,
+                      avatar: 1
+                    }
+                  }
+                ]
+              }
             },
-          },
-          {
-            $addFields: {
-              owner: {
-                $first: "$owner",
-              },
+            {
+              $unwind: "$ownerDetails"
             },
-          },
-        ],
+            {
+              $project: {
+                _id: 1,
+                videoFile: 1,
+                thumbnail: 1,
+                owner: 1,
+                title: 1,
+                description: 1,
+                views: 1,
+                duration: 1,
+                createdAt: 1,
+                isPublished: 1,
+                ownerDetails: 1
+              }
+            }
+          ]
+        }
       },
-    },
-  ]);
+      {
+        $project: {
+          _id: 0,
+          watchHistory: 1
+        }
+      },
+      {
+        $unwind: "$watchHistory"
+      },
+      {
+        $replaceRoot: { newRoot: "$watchHistory" }
+      },
+      {
+        $sort: {
+          createdAt: -1
+        }
+      }
+    ]);
 
-  if (!user) {
-    throw new ApiError(401, "error in finding watch history");
-  }
+    if (!watchHistory) {
+      throw new ApiError(404, "Error in finding watch history");
+    }
 
-  return res
-    .status(200)
-    .json(
+    return res.status(200).json(
       new ApiResponse(
         200,
-        user[0]?.watchHistory,
-        "watch history fetched sucessfully"
+        watchHistory,
+        "Watch history fetched successfully"
       )
     );
+  } catch (error) {
+    throw new ApiError(500, error.message || "Error in getting watch history");
+  }
 });
+
 
 export {
   getCurrentuser,

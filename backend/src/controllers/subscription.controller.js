@@ -154,7 +154,7 @@ const getUserChannelSubscribers = asyncHandler(async (req, res) => {
 //6.Get the total count of subscribed channels
 
 const getSubscribedChannels = asyncHandler(async (req, res) => {
-    const { subscriberId } = req.params;
+    const subscriberId =  req?.user?._id;
   
     const subscribedChannels = await Subscription.aggregate([
       {

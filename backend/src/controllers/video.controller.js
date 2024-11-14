@@ -7,12 +7,15 @@ import mongoose, { isValidObjectId } from "mongoose";
 import { Video } from "../models/video.model.js";
 import { Like } from "../models/like.model.js";
 import { Comment } from "../models/comment.model.js";
+import{ Subscription} from "../models/subscription.model.js";
 
 // get the video details of the user to upload
 
 const publishVideo = asyncHandler(async (req, res) => {
   try {
     const { title, description, isPublished = true } = req.body;
+    //console.log(req.body);
+    
 
     if (!(title.trim() || description.trim())) {
       throw new ApiError(400, "Please provide title and description");
@@ -30,6 +33,8 @@ const publishVideo = asyncHandler(async (req, res) => {
 
     // upload video and thumbnail to cloudinary
 
+    //console.log(req.files);
+    
     const videoLocalPath = req.files?.videoFile[0]?.path;
 
     if (!videoLocalPath) {
@@ -41,12 +46,17 @@ const publishVideo = asyncHandler(async (req, res) => {
     if (!thumbnailLocalPath) {
       throw new ApiError(400, "Please provide thumbnail file");
     }
+    //console.log(thumbnailLocalPath);
+    
+console.log(videoLocalPath);
 
     const videoUploadResponse = await cloudinaryHandler(
       videoLocalPath,
       "video"
     );
 
+    //console.log(videoUploadResponse);
+    
     if (!videoUploadResponse) {
       throw new ApiError(400, "Video upload failed on cloudinary");
     }
@@ -81,7 +91,7 @@ const publishVideo = asyncHandler(async (req, res) => {
       .status(200)
       .json(new ApiResponse(200, video, "video uploaded successfully"));
   } catch (error) {
-    throw new ApiError(500, "An error occurred while uploading your video");
+    throw new ApiError(500,error?.message );
   }
 });
 
@@ -235,7 +245,7 @@ const getAllVideo = asyncHandler(async (req, res) => {
 
     // Execute pipeline without pagination to check intermediate results
     const intermediateResults = await Video.aggregate(pipeLine);
-    console.log("Intermediate results (first 5):", intermediateResults.slice(0, 5));
+    //console.log("Intermediate results (first 5):", intermediateResults.slice(0, 5));
 
     const videoAggregator = Video.aggregate(pipeLine);
 
@@ -244,10 +254,10 @@ const getAllVideo = asyncHandler(async (req, res) => {
       limit: parseInt(limit),
     }
 
-    console.log("Pagination options:", options);
+    //console.log("Pagination options:", options);
 
     const videos = await Video.aggregatePaginate(videoAggregator, options);
-    console.log("Final paginated results (first 5):", videos.docs.slice(0, 5));
+   // console.log("Final paginated results (first 5):", videos.docs.slice(0, 5));
 
     return res.status(200).json(new ApiResponse(200, videos, "videos fetched successfully"));
   } catch (error) {
@@ -588,6 +598,7 @@ const getVideoById = asyncHandler(async (req, res) => {
       {
         $project: {
           videoFile: 1,
+          thumbnail: 1,
           title: 1,
           description: 1,
           owner: {
@@ -871,6 +882,95 @@ const updateWatchHistory = asyncHandler(async (req, res) => {
   }
 });
 
+const getSubscribedChannelVideos = asyncHandler(async (req, res) => {
+  const userId = req.user._id;
+
+  if (!isValidObjectId(userId)) {
+    throw new ApiError(400, "Invalid user ID");
+  }
+
+  const subscriptions = await Subscription.find({ subscriber: userId }).select("channel");
+
+  const subscribedChannelIds = subscriptions.map(sub => sub.channel);
+
+  const videos = await Video.aggregate([
+    { $match: { owner: { $in: subscribedChannelIds }, isPublished: true } },
+    {
+      $lookup: {
+        from: "users",
+        localField: "owner",
+        foreignField: "_id",
+        as: "ownerDetails",
+        pipeline: [
+          {
+            $project: {
+              _id: 1,
+              userName: 1,
+              avatar: 1
+            }
+          }
+        ]
+      }
+    },
+    { $unwind: "$ownerDetails" },
+    { $sort: { createdAt: -1 } }
+  ]);
+
+  
+
+  return res.status(200).json(new ApiResponse(200, videos, "Videos from subscribed channels fetched successfully"));
+});
+
+const getRecommendedVideos = asyncHandler(async (req, res) => {
+  const { videoId } = req.params;
+
+  //console.log(videoId);
+  
+
+  if (!isValidObjectId(videoId)) {
+    throw new ApiError(400, "Invalid video id");
+  }
+//console.log(videoId);
+
+  const currentVideo = await Video.findOne({ _id: videoId, isPublished: true });
+
+ // console.log("this is the current video"+currentVideo);
+
+  if (!currentVideo) {
+    throw new ApiError(404, "Video not found");
+  }
+
+  
+  
+  const relatedVideos = await Video.aggregate([
+    { $match: { _id: { $ne: currentVideo._id }, isPublished: true } },
+    { $sample: { size: 10 } }, 
+    {
+      $lookup: {
+        from: "users",
+        localField: "owner",
+        foreignField: "_id",
+        as: "ownerDetails",
+        pipeline: [
+          {
+            $project: {
+              _id: 1,
+              userName: 1,
+              avatar: 1
+            }
+          }
+        ]
+      }
+    },
+    { $unwind: "$ownerDetails" }
+  ]);
+
+  if (!relatedVideos.length) {
+    throw new ApiError(404, "No related videos found");
+  }
+
+  return res.status(200).json(new ApiResponse(200, relatedVideos, "Related videos fetched successfully"));
+});
 
 // TODO: Endpoint to get next video 
 
@@ -881,6 +981,8 @@ export {
   updateVideo,
   deleteVideo,
   togglePublishButton,
-  updateWatchHistory
+  updateWatchHistory,
+  getSubscribedChannelVideos,
+  getRecommendedVideos
 };
 

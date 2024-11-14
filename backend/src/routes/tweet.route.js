@@ -19,6 +19,6 @@ router.route('/delete-tweet/:tweetId').delete(verifyJWT, deleteTweet);
 
 router.route('/user-tweets/:userId').get(verifyJWT, getUserTweets);
 
-router.route('/all-tweets').get(verifyJWT,getAllTweets);
+router.route('/all-tweets').get(getAllTweets);
 
 export default router;

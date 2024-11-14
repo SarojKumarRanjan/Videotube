@@ -186,7 +186,7 @@ const getUserTweets = asyncHandler(async (req, res) => {
 
 
   const getAllTweets = asyncHandler(async (req, res) => {
-    const { page = 1, limit = 10 } = req.query;
+    
     const isGuest = !req.user?._id;
   
     const aggregationPipeline = [
@@ -256,19 +256,13 @@ const getUserTweets = asyncHandler(async (req, res) => {
           likesCount: 1,
           createdAt: 1,
           isLiked: 1,
+         
         },
       },
     ];
   
-    const options = {
-      page: parseInt(page, 10),
-      limit: parseInt(limit, 10),
-    };
   
-    const tweets = await Tweet.aggregatePaginate(
-      Tweet.aggregate(aggregationPipeline),
-      options
-    );
+    const tweets = await Tweet.aggregate(aggregationPipeline);
   
     return res
       .status(200)

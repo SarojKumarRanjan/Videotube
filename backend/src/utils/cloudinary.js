@@ -8,28 +8,42 @@ cloudinary.config({
   api_secret: process.env.API_SECRET,
 });
 
-const cloudinaryHandler = async (localFilePath) => {
+const cloudinaryHandler = async (localFilePath, resource_type="image") => {
+  console.log("video local file path", localFilePath);
+ // console.log("cloud name", process.env.CLOUD_NAME);
+ // console.log("api key", process.env.API_KEY);
+ // console.log("api secret", process.env.API_SECRET);
+  
   try {
     if (!localFilePath) return null;
 
     //upload to cloudinary
-
     const response = await cloudinary.uploader.upload(localFilePath, {
-      resource_type: "auto",
-    })
-    if (response) {
+      resource_type: resource_type,
+      timeout: 60000,
+    });
+    console.log("response log",response);
+
+    // Delete file AFTER successful upload
+    try {
       fs.unlinkSync(localFilePath);
+    } catch (unlinkError) {
+      console.error("Error deleting file in try block :", unlinkError);
+      // Continue execution even if file deletion fails
     }
 
-    //file uploaded successfully
-    //console.log("file uploaded successfully", response.url);
     return response;
-  } catch (error) {
-    fs.unlinkSync(localFilePath); // remvove the file from local storage as the file upload failed
+  } catch (uploadError) {
+    console.error("Upload failed:", uploadError);
+    // Try to delete file after failed upload
+    try {
+      fs.unlinkSync(localFilePath);
+    } catch (unlinkError) {
+      console.error("Error deleting file in catch block :", unlinkError);
+    }
     return null;
   }
 };
-
 function extractPublicId(url) {
   // Split the URL by '/'
   const parts = url.split('/');
