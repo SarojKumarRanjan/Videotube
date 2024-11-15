@@ -71,7 +71,7 @@ export const login = async (formData:loginFormDataInterface):Promise<loginRespon
     const data = res.data;
     toast.success(data?.message);
 
-    return data;
+    return data?.data?.user;
   } catch (error) {
     if (error instanceof AxiosError && error.response) {
         toast.error(error?.response?.data?.error|| "Error while logging in");
@@ -166,7 +166,7 @@ export const refreshAccessToken = async () => {
     const res = await API.post("/users/refresh-token");
     const data = res.data;
     return data?.data;
-    return data;
+    
   } catch (error) {
     if (error instanceof AxiosError && error.response) {
         toast.error(error?.response?.data?.error||"error while refreshing access token")

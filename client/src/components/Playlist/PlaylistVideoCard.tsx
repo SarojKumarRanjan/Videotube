@@ -10,6 +10,7 @@ import { DropdownMenu,
  } from "../ui/dropdown-menu";
  import { useRemoveVideoFromPlaylist } from "../../hooks/playlist.hook";
  import toast from "react-hot-toast";
+ import formatVideoDuration from "../../lib/durationFormat";
 
 
 interface Video {
@@ -47,14 +48,16 @@ export default function PlaylistVideoCard( {playlistVideo,playlistId}: {playlist
         <div key={playlistVideo._id} className="flex flex-col md:flex-row space-x-4">
         
           <div className="flex-shrink-0 relative">
+          <Link to={`/watch/${playlistVideo._id}`}>
             <img
               src={playlistVideo.thumbnail}
               alt={playlistVideo.title}
               className="w-40 h-24 object-cover rounded"
             />
-            <div className="absolute bottom-1 right-1 bg-black text-white text-xs px-1 rounded">
-              {playlistVideo.duration}
-            </div>
+            </Link>
+            <span className="absolute bottom-1 right-1 bg-black bg-opacity-70 text-white text-xs font-semibold py-[2px] px-[4px] rounded">
+                {formatVideoDuration(parseInt(playlistVideo.duration))}
+              </span>
           </div>
           
           <div className="flex-grow">

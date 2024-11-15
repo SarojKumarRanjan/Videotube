@@ -37,6 +37,8 @@ const handleLike = async () => {
   if(isLoading) return <div>Loading...</div>
   if(isError) return <div>{error?.message}</div>
 
+ // console.log(video);
+  
   return (
     <div className="lg:w-8/12">
       <div className="aspect-video  mb-4">
@@ -65,7 +67,7 @@ const handleLike = async () => {
           <Button
     onClick={handleLike}
     className="w-full p-2"
-    variant={video?.isLiked ? "default" : "outline"}
+    variant={video.isLiked ? "default" : "ghost"}
     size="icon"
   >
     <ThumbsUp className="h-4 w-4 mr-2" />

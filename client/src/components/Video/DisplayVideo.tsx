@@ -53,6 +53,7 @@ const DisplayVideo: React.FC<DisplayVideoProps> = ({ videos }) => {
             views={singleVideo.views}
             uploadedAt={singleVideo.createdAt}
             duration={singleVideo.duration}
+            channelId={singleVideo.ownerDetails?._id}
             
           />
         ))}

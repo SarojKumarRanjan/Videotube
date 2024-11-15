@@ -79,7 +79,7 @@ export default function Tweet() {
     if (res) {
       toast.success(res.message);
       setTweetContent('');
-      setIsDialogOpen(false);  // Close dialog after success
+      setIsDialogOpen(false);  
     }
   };
 

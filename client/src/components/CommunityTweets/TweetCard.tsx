@@ -26,7 +26,8 @@ import {
   DialogFooter,
 } from "../ui/dialog";
 import { Label } from "../ui/label";
-import TweetComment from "./TweetComment";
+import { Link } from "react-router-dom";
+//import TweetComment from "./TweetComment";
 
 
 
@@ -64,7 +65,7 @@ export default function TweetCard({
 }: CommunityPostProps) {
 
   //@ts-ignore
-const userId = useSelector((state) => state?.auth?.user?.data?.user?._id);
+const userId = useSelector((state) => state?.auth?.user?._id);
 
   const { mutateAsync: tweetLike } = useTweetLike();
   const { mutateAsync: tweetDelete } = useDeleteTweet();
@@ -123,11 +124,17 @@ const userId = useSelector((state) => state?.auth?.user?.data?.user?._id);
           <div className="flex justify-between items-center space-x-4">
             <div className="flex gap-4 items-center">
               <Avatar>
+                <Link to={`/channel/${ownerId}`}>
                 <AvatarImage src={authorAvatar} alt={author} />
                 <AvatarFallback>{author[0]}</AvatarFallback>
+                </Link>
               </Avatar>
               <div>
-                <p className="font-semibold">{author}</p>
+                <p className="font-semibold">
+                  <Link to={`/channel/${ownerId}`}>
+                  {author}
+                  </Link>
+                  </p>
                 <p className="text-sm text-muted-foreground">{timestamp}</p>
               </div>
             </div>
@@ -170,18 +177,18 @@ const userId = useSelector((state) => state?.auth?.user?.data?.user?._id);
               <ThumbsUp className="h-4 w-4" />
               <span>{likes}</span>
             </Button>
-            <Button
+            {/* <Button
               variant="ghost"
               size="sm"
               className="flex items-center space-x-2"
             >
               <MessageSquare className="h-4 w-4" />
               <span>{comments.length}</span>
-            </Button>
+            </Button> */}
           </div>
         </CardContent>
         <CardFooter className="flex flex-col items-start">
-        <TweetComment avatar={authorAvatar} comments={comments} />
+       {/*  <TweetComment avatar={authorAvatar} comments={comments} /> */}
         </CardFooter>
       </Card>
 

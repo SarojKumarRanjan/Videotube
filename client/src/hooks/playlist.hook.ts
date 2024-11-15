@@ -99,7 +99,7 @@ export const useRemoveVideoFromPlaylist = () => {
     const queryClient = useQueryClient();
     return useMutation({
         mutationFn:({ playlistId,videoId }: { playlistId: string, videoId: string }) => removeVideoFromPlaylist(playlistId,videoId),
-        onMutate:({ playlistId }: { playlistId: string }) => {
+        onSuccess:({ playlistId }: { playlistId: string }) => {
            
             //@ts-ignore
             queryClient.invalidateQueries(["Playlist", playlistId]);

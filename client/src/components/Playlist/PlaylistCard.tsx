@@ -12,6 +12,7 @@ import { useState } from "react";
 import EditPlaylistModal from "./EditPlaylistModal";
 import { useDeletePlaylist,useUpdatePlaylistDetails } from "../../hooks/playlist.hook";
 import toast from "react-hot-toast";
+import formatVideoDuration from "../../lib/durationFormat";
 
 interface PlaylistCardProps {
   coverImage: string;
@@ -109,7 +110,7 @@ const {mutateAsync:updatePlaylistDetails} = useUpdatePlaylistDetails();
           <span>{totalViews} views</span>
           
           <span className="mx-1">•</span>
-          <span>Duration: {totalDuration}</span>
+          <span>Duration: {formatVideoDuration(totalDuration)}</span>
         </div>
         <Link to={`${_id}`}>
           <div className="text-sm text-gray-500">View full playlist</div>

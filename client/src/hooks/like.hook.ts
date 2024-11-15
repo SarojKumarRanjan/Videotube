@@ -44,14 +44,10 @@ export const useTweetLike = () =>{
 }
 
 export const useCommentLike = () =>{
-    const queryClient = useQueryClient();
+    
     return useMutation({
         mutationFn:(commentId:string) => commentLike(commentId),
-        onSuccess:() => {
-            queryClient.invalidateQueries({
-                queryKey:["comments"]
-            })
-        },
+        
         retry:0
     })
 }

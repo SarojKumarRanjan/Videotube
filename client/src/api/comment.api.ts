@@ -7,44 +7,52 @@ const API = axios.create({
   baseURL: BASE_URL,
   withCredentials: true,
 });
-interface commentArgumentInterface {
-  content?: string;
-  commentParent: string;
-}
+
 
 export const getVideoComments = async (
   videoId: string,
   page: number,
-  limit: number
+  limit: number,
+  guest:boolean
 ) => {
   try {
+    
+    const params = new URLSearchParams({
+      page: page.toString(),
+      limit: limit.toString(),
+      guest:guest.toString()
+    });
+
     const res = await API.get(
-      "/comment/get-video-comments/" +
-        videoId +
-        "?page=" +
-        page +
-        "&limit=" +
-        limit
+      `/comment/get-video-comments/${videoId}?${params.toString()}`
     );
-    const data = res?.data;
-    return data;
+
+    
+    if (!res.data?.success) {
+      throw new Error(res.data?.message || "Failed to fetch comments");
+    }
+
+    return res.data;
   } catch (error) {
     if (error instanceof AxiosError && error.response) {
-      toast.error(
-        error.response.data?.error ||
-          "Something went wrong while getting video commnets"
-      );
+      const errorMessage = error.response.data?.error || "Failed to load comments";
+      toast.error(errorMessage);
+      throw new Error(errorMessage);
     } else {
-      toast.error("something went wrong while getting video comments");
+      const errorMessage = "Something went wrong while getting video comments";
+      toast.error(errorMessage);
+      throw new Error(errorMessage);
     }
-    console.log(error);
-    throw error;
   }
 };
 
-export const addComment = async (commentArgument: commentArgumentInterface) => {
+
+
+export const addVideoComment = async (videoId:string,content:string) => {
+  //console.log(videoId,content);
+  
   try {
-    const res = await API.post("/comment/", commentArgument);
+    const res = await API.post("/comment/add-comment/"+videoId, { content });
     const data = res?.data;
     return data;
   } catch (error) {
@@ -62,13 +70,13 @@ export const addComment = async (commentArgument: commentArgumentInterface) => {
 };
 
 export const updateComment = async (
-  commentArgument: commentArgumentInterface,
+  content:string,
   commentId: string
 ) => {
   try {
     const res = await API.patch(
-      "/comment/update-comment" + commentId,
-      commentArgument
+      "/comment/update-comment/" + commentId,
+      { content }
     );
     const data = res?.data;
     return data;
@@ -104,25 +112,7 @@ export const deleteCommentVideo = async (commentId: string) => {
   }
 };
 
-export const deleteCommentTweet = async (commentId: string) => {
-  try {
-    const res = await API.delete("/comment/delete-comment/" + commentId);
-    const data = res?.data;
-    return data;
-  } catch (error) {
-    if (error instanceof AxiosError && error.response) {
-      toast.error(
-        error.response.data?.error || "error while deleting comment of tweet"
-      );
-    } else {
-      toast.error("something went wrong while deleting comment");
-    }
-    console.log(error);
-    throw error;
-  }
-};
 
 
 
-//have make a seperate route in backend for the delete comment for the tweet and video 
-//have to update add comment and update comment route for the video and tweet 
+

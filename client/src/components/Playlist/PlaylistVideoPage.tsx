@@ -10,10 +10,15 @@ import {
   SelectValue,
 } from "../ui/select";
 import PlaylistVideoCard from "./PlaylistVideoCard";
-import { PlayCircle, Plus, Pencil, Share2, MoreVertical } from "lucide-react";
-import { useParams } from "react-router-dom";
+import { PlayCircle, Pencil, Share2 ,Trash2} from "lucide-react";
+import { Link, useParams } from "react-router-dom";
 import { ScrollArea } from "../ui/scroll-area";
-import { useGetPlaylist } from "../../hooks/playlist.hook";
+import { useGetPlaylist ,useDeletePlaylist,useUpdatePlaylistDetails} from "../../hooks/playlist.hook";
+import toast from "react-hot-toast";
+import { useNavigate } from "react-router-dom";
+import { useState } from "react";
+import EditPlaylistModal from "./EditPlaylistModal";
+import formatVideoDuration from "../../lib/durationFormat";
 
 
 
@@ -31,11 +36,18 @@ interface Video {
 
 
 function PlaylistVideoPage() {
+
+  const [modalIsOpen,setModalIsOpen] = useState<boolean>(false)
     const { playlistId } = useParams<{playlistId:string}>();
+
+    const {mutateAsync:deletePlaylist} = useDeletePlaylist();
+
+    const navigate = useNavigate()
 
 
 //@ts-ignore
     const {data,error,isError,isLoading} = useGetPlaylist(playlistId)
+    const {mutateAsync:updatePlaylistDetails} = useUpdatePlaylistDetails();
 
     if(isError){
         return(
@@ -53,8 +65,26 @@ function PlaylistVideoPage() {
         )
     }
 
-   // console.log(data);
+   const handleDelete = async() => {
+    //@ts-ignore
+    const res =  await deletePlaylist(playlistId);
     
+    
+    if(res){
+      toast.success(res.message || "Playlist Deleted")
+      navigate("/playlist");
+    }
+
+  }
+
+  const handleEdit = () => {
+    setModalIsOpen(true)
+  }
+
+  const handleCloseModal = () => {
+    setModalIsOpen(false);
+  }
+//console.log(modalIsOpen);
 
 
   return (
@@ -72,24 +102,29 @@ function PlaylistVideoPage() {
                 <h1 className="text-2xl font-bold mb-2">{data?.name}</h1>
                 <p className="text-sm text-gray-500 mb-2">{data?.description}</p>
                 <p className="text-sm text-gray-500 mb-4">
-                  Private • {data?.totalVideos} videos • {data?.totalViews} views
+                  Duration {formatVideoDuration(data?.totalDuration)} • {data?.totalVideos} videos • {data?.totalViews} views
                 </p>
                 <div className="flex flex-wrap gap-2">
+                  
                   <Button className="flex-1">
-                    <PlayCircle className="mr-2 h-4 w-4" /> Play all
+                  
+                    <PlayCircle className="mr-2 h-4 w-4" /> 
+                    <Link to={`/watch/${data?.videos[0]?._id}`}>
+                    Play all
+                    </Link>
                   </Button>
-                  <Button variant="outline" size="icon">
-                    <Plus className="h-4 w-4" />
-                  </Button>
-                  <Button variant="outline" size="icon">
+                  
+                  
+                  <Button onClick={handleEdit} variant="outline" size="icon">
                     <Pencil className="h-4 w-4" />
+                  </Button>
+                  <Button onClick={handleDelete} variant="outline" size="icon">
+                    <Trash2 className="h-4 w-4" />
                   </Button>
                   <Button variant="outline" size="icon">
                     <Share2 className="h-4 w-4" />
                   </Button>
-                  <Button variant="outline" size="icon">
-                    <MoreVertical className="h-4 w-4" />
-                  </Button>
+                  
                 </div>
               </div>
             </CardContent>
@@ -127,6 +162,27 @@ function PlaylistVideoPage() {
          
         </div>
       </div>
+      {
+        modalIsOpen && (
+         
+          <EditPlaylistModal
+          isOpen={modalIsOpen}
+          onClose={handleCloseModal}
+          initialName={data.name}
+          initialDescription={data.description}
+          onUpdate={async(updatedName, updatedDescription) => {
+            const playlistDetails = {
+              name: updatedName,
+              description: updatedDescription,
+            }
+           const res = await updatePlaylistDetails({playlistId:data?._id,playlistData:playlistDetails});
+           toast.success(res.message || "playlist updated successfully")
+            setModalIsOpen(false);
+          }}
+        />
+
+        )
+      }
     </div>
   );
 }
