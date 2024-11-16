@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/ban-ts-comment */
 import { useInfiniteQuery,useQuery,useMutation,useQueryClient } from "@tanstack/react-query";
 import { getAllVideo } from "../api/video.api";
 import { getUserHistory } from "../api/auth.api";
@@ -6,15 +7,17 @@ import { getVideoById,
     getRecomendedVideo,
  } from "../api/video.api";
 import { getYourSubscribedVideos } from "../api/subscription.api";
+import { useSelector } from "react-redux";
 
  
 
 
 
-export const useVideos = () => {  // Added default limit
-  
+export const useVideos = () => {  
+   
 
   return useInfiniteQuery({
+    
     queryKey: ["videos"],
     queryFn: ({ pageParam = 1 }) => getAllVideo(pageParam),
     getNextPageParam: (lastPage) => {
@@ -58,9 +61,11 @@ export const useUploadVideo = () => {
 }
 
 export const useGetVideoById = (videoId:string) => {
+    //@ts-ignore
+    const guest = useSelector((state) => !state.auth.authStatus)
     return useQuery({
         queryKey:["video",videoId],
-        queryFn:() => getVideoById(videoId),
+        queryFn:() => getVideoById(videoId,guest),
         staleTime:5000,
         retry:0
     })

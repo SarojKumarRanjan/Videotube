@@ -8,9 +8,10 @@ const API =  axios.create({
     withCredentials: true
     });
 
-export const getAllTweets = async () => {
+export const getAllTweets = async (guest:boolean) => {
+    
     try {
-        const response = await API.get("/tweet/all-tweets");
+        const response = await API.get("/tweet/all-tweets?guest="+guest);
         return response?.data?.data;
     } catch (error) {
         if(error instanceof AxiosError){
@@ -24,9 +25,12 @@ export const getAllTweets = async () => {
 }
 
 
-export const updateTweet = async (tweetId:string, content:string) => {
+export const updateTweet = async (tweetId:string, content:string,tweetImage:File) => {
+    const formData = new FormData();
+    formData.append("content",content);
+    formData.append("tweetImage",tweetImage);
     try {
-        const response = await API.patch(`/tweet/update-tweet/${tweetId}`, {content});
+        const response = await API.patch(`/tweet/update-tweet/${tweetId}`, formData);
         return response?.data;
     } catch (error) {
         if(error instanceof AxiosError){
@@ -54,9 +58,12 @@ export const deleteTweet = async (tweetId:string) => {
     }
 }
 
-export const createTweet = async (content:string) => {
+export const createTweet = async (content:string,tweetImage:File) => {
+    const formData = new FormData();
+    formData.append("content",content);
+    formData.append("tweetImage",tweetImage);
     try {
-        const response = await API.post(`/tweet/add-tweet`, {content});
+        const response = await API.post(`/tweet/add-tweet`, formData);
         return response?.data
     } catch (error) {
         if(error instanceof AxiosError){

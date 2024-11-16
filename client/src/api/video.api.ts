@@ -3,6 +3,7 @@ import { BASE_URL } from "../constant";
 import { toast } from "react-hot-toast";
 import { AxiosError } from "axios";
 
+
 const API = axios.create({
   baseURL: BASE_URL,
   withCredentials: true,
@@ -67,9 +68,9 @@ export const publishVideo = async (formData:publishVideo) =>{
 }
 
 
-export const getVideoById = async (videoId:string) => {
+export const getVideoById = async (videoId:string,guest:boolean) => {
     try {
-        const res = await API.get("/video/get-video/"+videoId);
+        const res = await API.get("/video/get-video/"+videoId+"?guest="+guest);
         const data = res.data;
         return data?.data;
     } catch (error) {

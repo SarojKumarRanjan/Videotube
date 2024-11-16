@@ -50,6 +50,7 @@ interface CommunityPostProps {
   comments: Comment[];
   _id: string;
   ownerId: string;
+  isLiked: boolean;
 }
 
 export default function TweetCard({
@@ -62,7 +63,11 @@ export default function TweetCard({
   timestamp,
   _id,
   ownerId,
+  isLiked
 }: CommunityPostProps) {
+
+  //console.log(isLiked);
+  
 
   //@ts-ignore
 const userId = useSelector((state) => state?.auth?.user?._id);
@@ -76,6 +81,7 @@ const userId = useSelector((state) => state?.auth?.user?._id);
   
   const [showModal, setShowModal] = useState(false);
   const [newContent, setNewContent] = useState(content);
+  const [tweetImage,setTweetImage] = useState<File | null>(null);
 
  
 
@@ -95,14 +101,16 @@ const userId = useSelector((state) => state?.auth?.user?._id);
 
   const handleUpdate = async() => {
     
-    setShowModal(false);
-    const res = await tweetUpdate({tweetId:_id,content:newContent});
+    
+    //@ts-ignore
+    const res = await tweetUpdate({tweetId:_id,content:newContent,tweetImage});
     //console.log(res);
     if (res) {
      
       
       toast.success(res?.message);
     }
+    setShowModal(false);
   };
 
   const handleDelete = async() => {
@@ -170,7 +178,7 @@ const userId = useSelector((state) => state?.auth?.user?._id);
           <div className="flex items-center space-x-4">
             <Button
               onClick={commentLikeHandler}
-              variant="ghost"
+              variant={isLiked ? "default" : "ghost"}
               size="sm"
               className="flex items-center space-x-2"
             >
@@ -209,6 +217,15 @@ const userId = useSelector((state) => state?.auth?.user?._id);
                 value={newContent}
                 onChange={(e) => setNewContent(e.target.value)}
                 placeholder="Enter the new content"
+              />
+            </div>
+            <div>
+              <Label htmlFor="image">Image</Label>
+              <Input
+                id="image"
+                type="file"
+                placeholder="Upload a new image"
+                onChange={(e) => setTweetImage(e.target.files?.[0] || null)}
               />
             </div>
           </div>

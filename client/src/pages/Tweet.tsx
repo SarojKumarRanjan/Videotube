@@ -66,6 +66,7 @@ const sampleComments = [
 export default function Tweet() {
   const [tweetContent, setTweetContent] = useState("");
   const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [tweetImage, setTweetImage] = useState<File | null>(null);
 
   //@ts-ignore
   const authStatus = useSelector((state) => state.auth.authStatus);
@@ -75,7 +76,8 @@ export default function Tweet() {
   console.log(tweets);
   
   const addTweet = async () => {
-    const res = await createTweet(tweetContent);
+  //@ts-ignore
+    const res = await createTweet({ content: tweetContent, tweetImage });
     if (res) {
       toast.success(res.message);
       setTweetContent('');
@@ -106,7 +108,15 @@ export default function Tweet() {
                   Share your thoughts with the community
                 </DialogDescription>
               </DialogHeader>
-              <input className="w-full p-2 border border-gray-300 rounded" type="file" />
+              
+              <label className="block text-sm font-medium text-gray-700">
+                Upload Image
+              </label>
+              <input
+                onChange={(e) => setTweetImage(e.target.files?.[0] || null)}
+                type="file"
+                className="w-full p-2 border border-gray-300 rounded"
+              />
               <textarea
                 value={tweetContent}
                 onChange={(e) => setTweetContent(e.target.value)}
@@ -128,11 +138,12 @@ export default function Tweet() {
           authorAvatar={tweet?.ownerDetails?.avatar}
           timestamp={timeAgo(tweet.createdAt)}
           content={tweet.content}
-          image={tweet.image}
+          image={tweet.tweetImage}
           likes={tweet.likesCount}
           comments={sampleComments}
           _id={tweet._id}
           ownerId={tweet?.ownerDetails?._id}
+          isLiked={tweet.isLiked}
         />
       ))}
     </div>

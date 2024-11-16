@@ -1,9 +1,9 @@
 
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar"
 import { Button } from "../ui/button"
-import { Card, CardContent } from "../ui/card"
-import { Tabs, TabsList, TabsTrigger } from "../ui/tabs"
-import { Bell, Search, MoreVertical } from "lucide-react"
+
+import { Tabs, TabsList, TabsTrigger,TabsContent } from "../ui/tabs"
+import { Bell, MoreVertical } from "lucide-react"
 
 export default function ChannelProfile() {
   return (
@@ -46,55 +46,37 @@ export default function ChannelProfile() {
           </div>
         </div>
 
-        {/* Navigation */}
+        
         <Tabs defaultValue="home" className="mt-6">
           <TabsList>
-            <TabsTrigger value="home">Home</TabsTrigger>
+            
             <TabsTrigger value="videos">Videos</TabsTrigger>
-            <TabsTrigger value="live">Live</TabsTrigger>
+            
             
             <TabsTrigger value="playlists">Playlists</TabsTrigger>
             <TabsTrigger value="community">Community</TabsTrigger>
           </TabsList>
+          <TabsContent value="videos">
+            <div>
+              videos
+            </div>
+          </TabsContent>
+          <TabsContent value="playlists">
+            <div>
+              playlists
+            </div>
+          </TabsContent>
+          <TabsContent value="community">
+            <div>
+              community
+            </div>
+          </TabsContent>
         </Tabs>
 
-        {/* Search Icon */}
-        <div className="mt-4 flex justify-end">
-          <Button variant="ghost" size="icon">
-            <Search className="h-4 w-4" />
-            <span className="sr-only">Search</span>
-          </Button>
-        </div>
 
-        {/* Featured Video */}
-        <div className="mt-6">
-          <Card>
-            <CardContent className="p-0">
-              <div className="flex flex-col md:flex-row">
-                <div className="md:w-2/5 relative">
-                  <img
-                    src="https://images.pexels.com/photos/158063/bellingrath-gardens-alabama-landscape-scenic-158063.jpeg?auto=compress&cs=tinysrgb&w=600"
-                    alt="Video Thumbnail"
-                    className="w-full h-full object-cover rounded-md"
-                  />
-                  <div className="absolute bottom-2 right-2 bg-black text-white text-xs px-1 rounded">
-                    3:47
-                  </div>
-                </div>
-                <div className="p-4 md:w-3/5">
-                  <h2 className="text-xl font-semibold">Four years after IIT in Four Minutes</h2>
-                  <p className="text-sm text-gray-600 dark:text-gray-400 mt-1">
-                    Harkirat Singh • 1.2M views • 1 year ago
-                  </p>
-                  <p className="mt-2 text-sm">
-                    The video describes my journey 4 years after graduating from IIT Roorkee. Hope you all like it My links
-                    https://twitter.com/kirat_tw https://linkedin.com/in/kirat-li https://www.instagram.com/kir...
-                  </p>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-        </div>
+        
+
+       
       </div>
     </div>
     )
