@@ -397,16 +397,16 @@ const updateUserCoverImage = asyncHandler(async (req, res) => {
 });
 
 const getUserChannelProfile = asyncHandler(async (req, res) => {
-  const { username } = req?.params;
+  const { userId } = req?.params;
 
-  if (!username?.trim()) {
-    throw new ApiError(400, "Please provide username in params");
+  if (!userId) {
+    throw new ApiError(400, "Please provide correct userId");
   }
 
   const channel = await User.aggregate([
     {
       $match: {
-        userName: username.toLowerCase(),
+        _id: mongoose.Types.ObjectId(userId),
       },
     },
     {

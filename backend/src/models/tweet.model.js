@@ -13,6 +13,9 @@ const tweetSchema = new Schema(
       ref: "User",
       required: true,
     },
+    tweetImage: {
+      type: String,
+    },
   },
   {
     timestamps: true,

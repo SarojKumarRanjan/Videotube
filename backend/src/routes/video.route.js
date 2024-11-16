@@ -30,7 +30,7 @@ router.route("/publish-video").post(verifyJWT,upload.fields(
 
 router.route("/get-all-videos").get( getAllVideo);
 
-router.route("/get-video/:id").get(getVideoById);
+router.route("/get-video/:id").get(verifyJWT,getVideoById);
 
 router.route("/update-video/:videoId").patch(verifyJWT,
     upload.fields(

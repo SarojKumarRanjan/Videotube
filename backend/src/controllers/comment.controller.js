@@ -8,6 +8,8 @@ import { Video } from '../models/video.model.js';
 
 const addComment = asyncHandler(async(req,res)=>{
 
+  console.log(req.body);
+  
    try {
      const userId  = req?.user?._id;
      if(!userId){
@@ -214,9 +216,70 @@ const getVideoComments = asyncHandler(async (req, res) => {
       );
   });
 
+  const getTweetComments = asyncHandler(async (req, res) => {
+    const { tweetId } = req.params;
+    const { page = 1, limit = 10 } = req.query;
+
+    if (!isValidObjectId(tweetId)) {
+        throw new ApiError(400, 'Invalid Tweet ID');
+    }
+
+    const commentsAggregate = Comment.aggregate([
+        {
+            $match: {
+                tweet: new mongoose.Types.ObjectId(tweetId),
+            },
+        },
+        {
+            $lookup: {
+                from: 'users',
+                localField: 'owner',
+                foreignField: '_id',
+                as: 'owner',
+            },
+        },
+        {
+            $addFields: {
+                owner: { $first: '$owner' },
+            },
+        },
+        {
+            $sort: { createdAt: -1 },
+        },
+        {
+            $project: {
+                content: 1,
+                createdAt: 1,
+                owner: {
+                    username: 1,
+                    fullName: 1,
+                    avatar: 1,
+                    _id: 1,
+                },
+            },
+        },
+    ]);
+
+    const options = {
+        page: parseInt(page, 10),
+        limit: parseInt(limit, 10),
+    };
+
+    const comments = await Comment.aggregatePaginate(commentsAggregate, options);
+
+    if (!comments) {
+        throw new ApiError(500, 'Failed to fetch comments');
+    }
+
+    return res.status(200).json(
+        new ApiResponse(200, comments, 'Comments fetched successfully')
+    );
+});
+
 export {
     addComment,
     updateComment,
     deleteComment,
-    getVideoComments
+    getVideoComments,
+    getTweetComments
 }
