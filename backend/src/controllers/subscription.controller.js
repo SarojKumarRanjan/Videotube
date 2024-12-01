@@ -11,47 +11,56 @@ import { ApiResponse } from "../utils/responseHandler.js";
 //3.if not subscribed then subscribe the channel
 
 const toggleSubscription = asyncHandler(async (req, res) => {
-    const  userId  = req?.user?._id;
-    const { channelId } = req?.params;
+  const userId = req?.user?._id;
+  const { channelId } = req?.params;
 
-    //console.log(req?.user._id);
-
-    if (!isValidObjectId(userId)) {
+  // Validate ObjectIds
+  if (!isValidObjectId(userId)) {
       throw new ApiError(400, "Invalid User ID");
-    }
-    if (!isValidObjectId(channelId)) {
+  }
+  if (!isValidObjectId(channelId)) {
       throw new ApiError(400, "Invalid Channel ID");
-    }
-    const user = await User.findById(userId);
-    if (!user) {
+  }
+
+  // Check if user and channel exist
+  const [user, channel] = await Promise.all([
+      User.findById(userId),
+      User.findById(channelId)
+  ]);
+
+  if (!user) {
       throw new ApiError(404, "User not found");
-    }
-    const channel = await User.findById(channelId);
-    if (!channel) {
+  }
+  if (!channel) {
       throw new ApiError(404, "Channel not found");
-    }
-    if (userId.toString() === channelId.toString()) {
+  }
+
+  // Prevent self-subscription
+  if (userId.toString() === channelId.toString()) {
       throw new ApiError(400, "User cannot subscribe to themselves");
-    }
-    const existingSubscription = await Subscription.findOne({
+  }
+
+  // Toggle subscription
+  const existingSubscription = await Subscription.findOne({
       subscriber: userId,
       channel: channelId,
-    });
-    if (existingSubscription) {
-        await Subscription.findByIdAndDelete(existingSubscription?._id);
-        return res
-          .status(200)
-          .json(new ApiResponse(200, null, "Channel Unsubscribed"));
-      } else {
-        await Subscription.create({
+  });
+
+  let result;
+  if (existingSubscription) {
+      // Unsubscribe
+      await Subscription.findByIdAndDelete(existingSubscription._id);
+      result = new ApiResponse(200, { subscribed: false }, "Channel Unsubscribed");
+  } else {
+      // Subscribe
+      await Subscription.create({
           channel: channelId,
           subscriber: userId,
-        });
-        return res
-          .status(200)
-          .json(new ApiResponse(200, null, "Channel Subscribed"));
-    }
-    
+      });
+      result = new ApiResponse(200, { subscribed: true }, "Channel Subscribed");
+  }
+
+  return res.status(200).json(result);
 });
 
 //controller to get the list of subscribers of a channel

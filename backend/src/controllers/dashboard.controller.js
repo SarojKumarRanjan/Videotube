@@ -122,6 +122,7 @@ const getChannelVideos = asyncHandler(async (req, res) => {
         isPublished: 1,
         likesCount: 1,
         createdAt: 1,
+        views:1
       },
     },
   ]);

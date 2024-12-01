@@ -399,70 +399,80 @@ const updateUserCoverImage = asyncHandler(async (req, res) => {
 const getUserChannelProfile = asyncHandler(async (req, res) => {
   const { userId } = req?.params;
 
+  // Validate userId
   if (!userId) {
-    throw new ApiError(400, "Please provide correct userId");
+      throw new ApiError(400, "Please provide a valid userId");
   }
 
-  const channel = await User.aggregate([
-    {
-      $match: {
-        _id: mongoose.Types.ObjectId(userId),
-      },
-    },
-    {
-      $lookup: {
-        from: "subscriptions",
-        localField: "_id",
-        foreignField: "channel",
-        as: "subscribers",
-      },
-    },
-    {
-      $lookup: {
-        from: "subscriptions",
-        localField: "_id",
-        foreignField: "subscriber",
-        as: "subscribedTo",
-      },
-    },
-    {
-      $addFields: {
-        subscribersCount: { $size: "$subscribers" },
-        subscribedToCount: { $size: "$subscribedTo" },
-        isSubscribed: {
-          $cond: {
-            if: { $in: [req.user?._id, "$subscribers.subscriber"] },
-            then: true,
-            else: false,
+  try {
+      const channel = await User.aggregate([
+          // Match the specific user by ID
+          {
+              $match: {
+                  _id: new mongoose.Types.ObjectId(userId)
+              }
           },
-        },
-      },
-    },
-    {
-      $project: {
-        email: 1,
-        fullName: 1,
-        userName: 1,
-        subscribersCount: 1,
-        subscribedToCount: 1,
-        isSubscribed: 1,
-        avatar: 1,
-        coverImage: 1,
-      },
-    },
-  ]);
+          // Lookup subscribers
+          {
+              $lookup: {
+                  from: "subscriptions",
+                  localField: "_id",
+                  foreignField: "channel",
+                  as: "subscribersofmychannel"
+              }
+          },
+          // Lookup channels this user is subscribed to
+          {
+              $lookup: {
+                  from: "subscriptions",
+                  localField: "_id",
+                  foreignField: "subscriber",
+                  as: "subscribedTo"
+              }
+          },
+          // Add computed fields
+          {
+              $addFields: {
+                  subscribersCount: { $size: "$subscribersofmychannel" },
+                  subscribedToCount: { $size: "$subscribedTo" },
+                  isSubscribed: {
+                      $cond: {
+                          if: { $in: [req.user?._id, "$subscribersofmychannel.subscriber"] },
+                          then: true,
+                          else: false
+                      }
+                  }
+              }
+          },
+          // Project only required fields
+          {
+              $project: {
+                  email: 1,
+                  fullName: 1,
+                  userName: 1,
+                  subscribersCount: 1,
+                  subscribedToCount: 1,
+                  isSubscribed: 1,
+                  avatar: 1,
+                  coverImage: 1
+              }
+          }
+      ]);
 
-  if (!channel?.length) {
-    throw new ApiError(404, "channel does not exist");
+      // Check if channel exists
+      if (!channel?.length) {
+          throw new ApiError(404, "Channel does not exist");
+      }
+
+      // Return the channel data
+      return res.status(200).json(
+          new ApiResponse(200, channel[0], "Channel data fetched successfully")
+      );
+
+  } catch (error) {
+      throw new ApiError(500, error.message || "Error in getting channel data");
   }
-
-  return res
-    .status(200)
-    .json(
-      new ApiResponse(200, channel[0], "channel data fetched successfully")
-    );
 });
-
 const getWatchHistory = asyncHandler(async (req, res) => {
   try {
     const userId = new mongoose.Types.ObjectId(req.user._id);
@@ -529,7 +539,7 @@ const getWatchHistory = asyncHandler(async (req, res) => {
       },
       {
         $sort: {
-          createdAt: -1
+          createdAt: 1
         }
       }
     ]);

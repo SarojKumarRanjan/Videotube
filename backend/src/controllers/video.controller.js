@@ -287,7 +287,6 @@ this endpoint will return these fields
 */
 const getVideoById = asyncHandler(async (req, res) => {
   try {
-    
     const { id } = req.params;
 
     if (!id) {
@@ -300,219 +299,6 @@ const getVideoById = asyncHandler(async (req, res) => {
 
     const isGuest = !req?.user?._id;
 
-  /*   // Stage 1: Match
-    const stage1 = await Video.aggregate([
-      {
-        $match: { _id: new mongoose.Types.ObjectId(id) },
-      }
-    ]);
-    console.log("Stage 1 (Match) result:", stage1);
-
-    // Stage 2: Lookup users
-    const stage2 = await Video.aggregate([
-      {
-        $match: { _id: new mongoose.Types.ObjectId(id) },
-      },
-      {
-        $lookup: {
-          from: "users",
-          localField: "owner",
-          foreignField: "_id",
-          as: "owner",
-          pipeline: [
-            {
-              $lookup: {
-                from: "subscriptions",
-                localField: "_id",
-                foreignField: "channel",
-                as: "subscribers",
-              },
-            },
-            {
-              $addFields: {
-                subscriberCount: { $size: "$subscribers" },
-                isSubscribed: {
-                  $cond: {
-                    if: isGuest,
-                    then: false,
-                    else: {
-                      $cond: {
-                        if: {
-                          $in: [req.user?._id, "$subscribers.subscriber"],
-                        },
-                        then: true,
-                        else: false,
-                      },
-                    },
-                  },
-                },
-              },
-            },
-            {
-              $project: {
-                userName: 1,
-                fullName: 1,
-                avatar: 1,
-                subscriberCount: 1,
-                isSubscribed: 1,
-              },
-            },
-          ],
-        },
-      }
-    ]);
-    console.log("Stage 2 (Lookup users) result:", stage2);
-
-    // Stage 3: Lookup likes
-    const stage3 = await Video.aggregate([
-      {
-        $match: { _id: new mongoose.Types.ObjectId(id) },
-      },
-      {
-        $lookup: {
-          from: "users",
-          localField: "owner",
-          foreignField: "_id",
-          as: "owner",
-          pipeline: [
-            {
-              $lookup: {
-                from: "subscriptions",
-                localField: "_id",
-                foreignField: "channel",
-                as: "subscribers",
-              },
-            },
-            {
-              $addFields: {
-                subscriberCount: { $size: "$subscribers" },
-                isSubscribed: {
-                  $cond: {
-                    if: isGuest,
-                    then: false,
-                    else: {
-                      $cond: {
-                        if: {
-                          $in: [req.user?._id, "$subscribers.subscriber"],
-                        },
-                        then: true,
-                        else: false,
-                      },
-                    },
-                  },
-                },
-              },
-            },
-            {
-              $project: {
-                userName: 1,
-                fullName: 1,
-                avatar: 1,
-                subscriberCount: 1,
-                isSubscribed: 1,
-              },
-            },
-          ],
-        },
-      },
-      {
-        $lookup: {
-          from: "likes",
-          localField: "_id",
-          foreignField: "video",
-          as: "likes",
-        },
-      }
-    ]);
-    console.log("Stage 3 (Lookup likes) result:", stage3);
-
-    // Stage 4: Add fields
-    const stage4 = await Video.aggregate([
-      {
-        $match: { _id: new mongoose.Types.ObjectId(id) },
-      },
-      {
-        $lookup: {
-          from: "users",
-          localField: "owner",
-          foreignField: "_id",
-          as: "owner",
-          pipeline: [
-            {
-              $lookup: {
-                from: "subscriptions",
-                localField: "_id",
-                foreignField: "channel",
-                as: "subscribers",
-              },
-            },
-            {
-              $addFields: {
-                subscriberCount: { $size: "$subscribers" },
-                isSubscribed: {
-                  $cond: {
-                    if: isGuest,
-                    then: false,
-                    else: {
-                      $cond: {
-                        if: {
-                          $in: [req.user?._id, "$subscribers.subscriber"],
-                        },
-                        then: true,
-                        else: false,
-                      },
-                    },
-                  },
-                },
-              },
-            },
-            {
-              $project: {
-                userName: 1,
-                fullName: 1,
-                avatar: 1,
-                subscriberCount: 1,
-                isSubscribed: 1,
-              },
-            },
-          ],
-        },
-      },
-      {
-        $lookup: {
-          from: "likes",
-          localField: "_id",
-          foreignField: "video",
-          as: "likes",
-        },
-      },
-      {
-        $addFields: {
-          likesCount: { $size: "$likes" },
-          owner: {
-            $first: "$owner",
-          },
-          isLiked: {
-            $cond: {
-              if: isGuest,
-              then: false,
-              else: {
-                $cond: {
-                  if: {
-                    $in: [req.user?._id, "$likes.likedBy"],
-                  },
-                  then: true,
-                  else: false,
-                },
-              },
-            },
-          },
-        },
-      }
-    ]);
-    console.log("Stage 4 (Add fields) result:", stage4); */
-
-    // Final stage: Project
     const video = await Video.aggregate([
       {
         $match: { _id: new mongoose.Types.ObjectId(id) },
@@ -529,12 +315,12 @@ const getVideoById = asyncHandler(async (req, res) => {
                 from: "subscriptions",
                 localField: "_id",
                 foreignField: "channel",
-                as: "subscribers",
+                as: "subscribersofchannel",
               },
             },
             {
               $addFields: {
-                subscriberCount: { $size: "$subscribers" },
+                subscriberCount: { $size: "$subscribersofchannel" },
                 isSubscribed: {
                   $cond: {
                     if: isGuest,
@@ -542,7 +328,7 @@ const getVideoById = asyncHandler(async (req, res) => {
                     else: {
                       $cond: {
                         if: {
-                          $in: [req.user?._id, "$subscribers.subscriber"],
+                          $in: [req.user?._id, "$subscribersofchannel.subscriber"],
                         },
                         then: true,
                         else: false,
@@ -606,28 +392,26 @@ const getVideoById = asyncHandler(async (req, res) => {
             userName: 1,
             fullName: 1,
             avatar: 1,
+            subscriberCount: 1,
+            isSubscribed: 1,
           },
           duration: 1,
           createdAt: 1,
           views: 1,
-          comments: 1,
           likesCount: 1,
           isLiked: 1,
-          subscriberCount: 1,
-          isSubscribed: 1,
         },
       },
     ]);
-    console.log("Final stage (Project) result:", video);
 
     if (!video.length) {
       throw new ApiError(404, "Video not found");
     }
-      
+
     // Increment views using an update operation
     await Video.findByIdAndUpdate(video[0]._id, { $inc: { views: 1 } });
-  
-      return res.status(200).json(new ApiResponse(200, video[0], "Video fetched successfully"));
+
+    return res.status(200).json(new ApiResponse(200, video[0], "Video fetched successfully"));
   } catch (error) {
     throw new ApiError(500, "An error occurred while fetching your video");
   }
@@ -862,7 +646,9 @@ const updateWatchHistory = asyncHandler(async (req, res) => {
    // console.log("watchHistoryEntry", watchHistoryEntry);
 
     if (watchHistoryEntry) {
-      throw new ApiError(400, "Video already in watch history");
+      return res
+      .status(200)
+      .json(new ApiResponse(200, {}, "Video already in watch history"));
     }
 
     user.watchHistory.push(currentVideo._id);
