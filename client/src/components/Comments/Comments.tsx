@@ -159,6 +159,8 @@ export default function Comment() {
     setEditContent(comment.content);
   };
 
+  
+
   return (
     <>
       <div className="flex justify-start items-center mb-4">
@@ -191,7 +193,17 @@ export default function Comment() {
 
       <div className="space-y-4">
         {data?.pages.map((page: CommentResponse) =>
-          page.data.docs.map((comment) => (
+          page.data.docs.map((comment) => {
+
+
+
+           // console.log(user?._id);
+            //console.log(comment.owner._id);
+            
+            //console.log(user?._id === comment.owner._id);
+
+
+            return(
             <div key={comment._id} className="flex gap-4 mb-4">
               <Avatar>
                 <AvatarImage src={comment.owner.avatar} alt={comment.owner.fullName} />
@@ -265,7 +277,7 @@ export default function Comment() {
                 </div>
               </div>
             </div>
-          ))
+          )})
         )}
       </div>
 

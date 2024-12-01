@@ -16,7 +16,7 @@ import formatVideoDuration from "../../lib/durationFormat";
 
 interface PlaylistCardProps {
   coverImage: string;
-  title: string;
+  name: string;
   _id: string;
   videoCount: number;
   totalViews: number;
@@ -26,7 +26,7 @@ interface PlaylistCardProps {
 
 export default function PlaylistCard({
   coverImage,
-  title,
+  name,
   _id,
   videoCount,
   description,
@@ -65,13 +65,13 @@ const {mutateAsync:updatePlaylistDetails} = useUpdatePlaylistDetails();
           <div className="relative aspect-video group">
             <img
               src={coverImage}
-              alt={`${title} playlist cover`}
+              alt={`${name} playlist cover`}
               className="w-full h-full object-cover"
             />
             <div className="absolute inset-0 flex flex-col justify-between p-4">
               
               <div className="flex flex-col items-center justify-center absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                <Link to={`${_id}`}>
+                <Link to={`/playlist/${_id}`}>
                   <Button variant="secondary" className="flex items-center">
                     <PlayCircle className="mr-2 h-5 w-5" />
                     Play all
@@ -89,7 +89,7 @@ const {mutateAsync:updatePlaylistDetails} = useUpdatePlaylistDetails();
       </Card>
       <div className="mt-2">
         <div className="flex items-center justify-between">
-          <h3 className="font-semibold text-md">{title}</h3>
+          <h3 className="font-semibold text-md">{name}</h3>
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <button>
@@ -122,7 +122,7 @@ const {mutateAsync:updatePlaylistDetails} = useUpdatePlaylistDetails();
         <EditPlaylistModal
           isOpen={isModalOpen}
           onClose={handleCloseModal}
-          initialName={title}
+          initialName={name}
           initialDescription={description}
           onUpdate={(updatedName, updatedDescription) => {
             const playlistDetails = {

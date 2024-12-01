@@ -44,7 +44,7 @@ function Playlist() {
       <PlaylistCard
       _id={playlist?._id}
         coverImage={playlist?.coverImage}
-        title={playlist?.name}
+        name={playlist?.name}
         totalViews={playlist?.totalViews}
         videoCount={playlist?.totalVideos}
         description={playlist?.description}

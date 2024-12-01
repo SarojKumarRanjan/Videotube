@@ -42,7 +42,9 @@ const handleLogout = async() => {
     <DropdownMenuContent align="end">
       <DropdownMenuLabel>My Account</DropdownMenuLabel>
       <DropdownMenuSeparator />
-      <DropdownMenuItem>Settings</DropdownMenuItem>
+      <DropdownMenuItem asChild>
+        <Link to="/setting">Settings</Link>
+      </DropdownMenuItem>
       <DropdownMenuItem>Support</DropdownMenuItem>
       <DropdownMenuSeparator />
       <DropdownMenuItem onClick={handleLogout}>Logout</DropdownMenuItem>

@@ -5,6 +5,10 @@ import { getUserHistory } from "../api/auth.api";
 import { publishVideo } from "../api/video.api";
 import { getVideoById,
     getRecomendedVideo,
+    updateWatchHistory,
+    updateVideoDetails,
+    deleteVideo,
+    toggleVideoPublish
  } from "../api/video.api";
 import { getYourSubscribedVideos } from "../api/subscription.api";
 import { useSelector } from "react-redux";
@@ -13,13 +17,13 @@ import { useSelector } from "react-redux";
 
 
 
-export const useVideos = () => {  
+export const useVideos = (userId?:string) => {  
    
 
   return useInfiniteQuery({
     
     queryKey: ["videos"],
-    queryFn: ({ pageParam = 1 }) => getAllVideo(pageParam),
+    queryFn: ({ pageParam = 1}) => getAllVideo(pageParam,userId),
     getNextPageParam: (lastPage) => {
       if (!lastPage.hasNextPage) return undefined;
       return lastPage.nextPage;
@@ -92,3 +96,63 @@ export const useGetRecomendedVideos = (videoId: string) => {
         retry: 0,
     });
 };
+
+export const useUpdateWatchHistory = () => {
+    return useMutation({
+        mutationFn:(videoId:string) => updateWatchHistory(videoId),
+        retry:0
+    })
+}
+
+interface updateVideoDetails{
+   
+    title?:string
+    description?:string
+    thumbnail?:string
+    _id:string
+   
+}
+
+export const useUpdateVideoDetails = () => {
+    const queryClient = useQueryClient();
+    return useMutation({
+        mutationFn:({formData}:{formData:updateVideoDetails}) => updateVideoDetails(formData._id,formData),
+        onSuccess:(data) => {
+            const videoId = data?.data?._id;
+            queryClient.invalidateQueries({
+
+                queryKey:["video",videoId]
+            })
+            queryClient.invalidateQueries({
+                queryKey:["channelVideos"]
+            })
+        },
+        retry:0
+    })
+}
+
+export const useDeleteVideo = () => {
+    const queryClient = useQueryClient();
+    return useMutation({
+        mutationFn:(videoId:string) => deleteVideo(videoId),
+        onSuccess:() => {
+            queryClient.invalidateQueries({
+                queryKey:["channelVideos"]
+            })
+        },
+        retry:0
+    })
+}
+
+export const useToggleVideoPublish = () => {
+    const queryClient = useQueryClient();
+    return useMutation({
+        mutationFn:(videoId:string) => toggleVideoPublish(videoId),
+        onSuccess:() => {
+            queryClient.invalidateQueries({
+                queryKey:["channelVideos"]
+            })
+        },
+        retry:0
+    })
+}

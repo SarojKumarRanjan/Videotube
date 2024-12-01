@@ -2,7 +2,12 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { login,
     logout,
     getCurrentUser,
-    registerUser
+    registerUser,
+    updateAccountDetails,
+    updateUserAvatar,
+    updateUserCoverImage,
+    changePassword,
+    getUserChannelStat
  } from "../api/auth.api";
 
 
@@ -58,5 +63,66 @@ export const useLogin = () => {
   export const useRegisterUser = () => {
     return useMutation({
       mutationFn: (user:registerUser) => registerUser(user),
+    });
+  };
+
+  export const useGetUserChannelStat = (userId:string,guest:boolean) => {
+    return useQuery({
+      queryKey: ["userChannelStat",userId],
+      queryFn: () => getUserChannelStat(userId,guest),
+      staleTime: 1000*60*5,
+      retry: 0,
+    });
+  };
+
+  interface changePasswordInterface{
+    oldPassword:string,
+    newPassword:string
+  }
+  export const useChangePassword = () => {
+    return useMutation({
+      mutationFn: (formData:changePasswordInterface) => changePassword(formData.oldPassword,formData.newPassword),
+      
+    });
+  };
+
+  interface updateAccountDetailsInterface{
+    userName? :string,
+    fullName?:string,
+    email?:string
+  }
+  export const useUpdateAccountDetails = () => {
+    const queryClient = useQueryClient();
+    return useMutation({
+      mutationFn: (formData:updateAccountDetailsInterface) => updateAccountDetails(formData),
+      onSuccess:() => {
+        queryClient.invalidateQueries({
+            queryKey:["currentUser"]
+        })
+      }
+    });
+  };
+
+  export const useUpdateUserAvatar = () => {
+    const queryClient = useQueryClient();
+    return useMutation({
+      mutationFn: (avatar:File) => updateUserAvatar(avatar),
+      onSuccess:() => {
+        queryClient.invalidateQueries({
+            queryKey:["currentUser"]
+        })
+      }
+    });
+  };
+
+  export const useUpdateUserCoverImage = () => {
+    const queryClient = useQueryClient();
+    return useMutation({
+      mutationFn: (coverImage:File) => updateUserCoverImage(coverImage),
+      onSuccess:() => {
+        queryClient.invalidateQueries({
+            queryKey:["currentUser"]
+        })
+      }
     });
   };

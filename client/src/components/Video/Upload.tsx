@@ -10,10 +10,10 @@ import { Upload, X } from "lucide-react";
 import { useUploadVideo } from "../../hooks/video.hook";
 import { useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
-
+import { Loader2 } from "lucide-react";
 export default function VideoUpload() {
   const navigate = useNavigate();
-  const { mutateAsync: publishVideo, isError, error } = useUploadVideo();
+  const { mutateAsync: publishVideo, isError, error,isPending } = useUploadVideo();
   const [videoFile, setVideoFile] = useState<File | null>(null);
   const [thumbnailFile, setThumbnailFile] = useState<File | null>(null);
   const [title, setTitle] = useState("");
@@ -163,8 +163,8 @@ export default function VideoUpload() {
           <Label htmlFor="published">Publish video</Label>
         </div>
 
-        <Button type="submit" className="w-full">
-          <Upload className="mr-2 h-4 w-4" /> Upload Video
+        <Button disabled={isPending} type="submit" className="w-full">
+          {isPending ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <Upload className="mr-2 h-4 w-4" />} Upload Video
         </Button>
       </form>
     </div>

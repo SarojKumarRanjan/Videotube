@@ -14,7 +14,8 @@ export const getChannelStats = async() => {
     try {
         const res = await API.get("/dashboard/getchannelStat");
         const data = res?.data;
-        return data;
+        //console.log(data);
+        return data?.data;
     } catch (error) {
         if(error instanceof AxiosError && error.response){
             toast.error(error.response.data?.error ||"error while getting channel stats")
@@ -32,7 +33,7 @@ export const getChannelAbout = async() => {
     try {
         const res = await API.get("/dashboard/getchannelabouts")
         const data = res?.data;
-        return data;
+        return data?.data;
     } catch (error) {
         if (error instanceof AxiosError && error.response) {
             toast.error(error.response.data?.error||"error while getting channel about")
@@ -50,7 +51,7 @@ export const getChannelVideo = async() =>{
     try {
         const res = await API.get("/dashboard/getchannelvideos")
         const data = res?.data;
-        return data;
+        return data?.data;
     } catch (error) {
         if (error instanceof AxiosError && error.response) {
             toast.error(error.response.data?.error||"error while getting channel video on dashboard")

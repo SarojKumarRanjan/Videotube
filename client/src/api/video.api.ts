@@ -22,13 +22,14 @@ interface updateVideoDetails{
    
     title?:string
     description?:string
-    thumbnail?:File
+    thumbnail?:string
+    _id:string
    
 }
 
-export const getAllVideo = async (pageParam:number) => {
+export const getAllVideo = async (pageParam:number,userId?:string) => {
   try {
-    const res = await API.get("/video/get-all-videos?page="+pageParam+"&limit="+12);
+    const res = await API.get("/video/get-all-videos?page="+pageParam+"&limit="+12+(userId ? "&userId="+userId : ""));
     const data = res.data;
    // console.log(data);
     

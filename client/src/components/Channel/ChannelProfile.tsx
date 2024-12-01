@@ -2,16 +2,51 @@
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar"
 import { Button } from "../ui/button"
 
-import { Tabs, TabsList, TabsTrigger,TabsContent } from "../ui/tabs"
+import { Tabs, TabsList, TabsTrigger, TabsContent } from "../ui/tabs"
 import { Bell, MoreVertical } from "lucide-react"
+import { useGetUserPlaylist } from "../../hooks/playlist.hook"
+import { useParams } from "react-router-dom"
+import PlaylistCard from "../Playlist/PlaylistCard"
+import { useVideos } from "../../hooks/video.hook"
+import DisplayVideo from "../Video/DisplayVideo"
+import { useGetUserChannelStat } from "../../hooks/auth.hook"
+import { useSelector } from "react-redux"
+import { useToggleSubscribe } from "../../hooks/subscription.hook"
+import { toast } from "react-hot-toast"
 
 export default function ChannelProfile() {
+    const { channelId } = useParams();
+    const {user,authStatus} = useSelector((state:any) => state.auth);
+    const guest = !authStatus;
+    const {mutateAsync:toggleSubscribe} = useToggleSubscribe(channelId as string);
+  const { data: playlists, } = useGetUserPlaylist(channelId as string);
+  //console.log(playlists);
+
+  const { data: videos } = useVideos(channelId as string);
+  //console.log(videos);
+
+  const { data: userChannelStat, isLoading: userChannelStatLoading } = useGetUserChannelStat(channelId as string,guest);
+
+  const handleToggleSubscribe = async   () => {
+    console.log("clicked");
+    
+
+   const res = await toggleSubscribe();
+   console.log(res);
+   
+    toast.success(userChannelStat?.isSubscribed ? "Unsubscribed" : "Subscribed");
+  }
+
+
+  console.log(userChannelStat);
+  if(userChannelStatLoading) return <div>Loading...</div>
+
   return (
     <div className="w-full">
       {/* Banner */}
       <div className="relative h-40 bg-blue-600">
         <img
-          src="https://images.pexels.com/photos/440731/pexels-photo-440731.jpeg?auto=compress&cs=tinysrgb&w=600"
+          src={userChannelStat?.coverImage}
           alt="Channel Banner"
           className="w-full h-full object-cover"
         />
@@ -21,63 +56,75 @@ export default function ChannelProfile() {
       <div className="container mx-auto px-4 py-4">
         <div className="flex flex-col md:flex-row items-start md:items-center gap-4">
           <Avatar className="w-24 h-24 border-4 border-white">
-            <AvatarImage src="https://images.pexels.com/photos/158063/bellingrath-gardens-alabama-landscape-scenic-158063.jpeg?auto=compress&cs=tinysrgb&w=600" alt="Harkirat Singh" />
+            <AvatarImage src={userChannelStat?.avatar} alt="Harkirat Singh" />
             <AvatarFallback>HS</AvatarFallback>
           </Avatar>
           <div className="flex-grow">
-            <h1 className="text-2xl font-bold">Harkirat Singh</h1>
-            <p className="text-gray-600 dark:text-gray-400">@harkirat1 • 469K subscribers • 234 videos</p>
+            <h1 className="text-2xl font-bold">{userChannelStat?.fullName}</h1>
+            <p className="text-gray-600 dark:text-gray-400">{userChannelStat?.subscribersCount} subscribers • {userChannelStat?.totalVideos} videos</p>
             <p className="text-sm text-gray-600 dark:text-gray-400 mt-2">
-              I'm kirat, a 2018 Computer Science undergrad from IIT Roorkee. I've been part of Google...
-              <button className="text-blue-600 dark:text-blue-400 ml-1">more</button>
+              {userChannelStat?.userName}
+              {/* <button className="text-blue-600 dark:text-blue-400 ml-1">more</button> */}
             </p>
-            <p className="text-sm text-blue-600 dark:text-blue-400 mt-1">
-              twitter.com/kirat_tw and 5 more links
-            </p>
+            {/* <p className="text-sm text-blue-600 dark:text-blue-400 mt-1">
+              {userChannelStat?.socialMediaLinks?.map((link:any) => (
+                <a href={link} className="text-blue-600 dark:text-blue-400 ml-1">{link}</a>
+              ))}
+            </p> */}
           </div>
           <div className="flex items-center gap-2">
-            <Button className="bg-gray-100 text-gray-800 hover:bg-gray-200">
-              Subscribed
+            <Button
+            onClick={ handleToggleSubscribe}
+            variant={userChannelStat?.isSubscribed ? "default" : "outline"}
+            disabled={guest || user?._id === userChannelStat?._id}
+            >
+              {userChannelStat?.isSubscribed ? "Subscribed" : "Subscribe"}
               <Bell className="ml-2 h-4 w-4" />
             </Button>
-            <Button variant="outline">
+            <Button variant="outline" disabled={guest }>
               <MoreVertical className="h-4 w-4" />
             </Button>
           </div>
         </div>
 
-        
-        <Tabs defaultValue="home" className="mt-6">
+
+        <Tabs defaultValue="videos" className="mt-6">
           <TabsList>
-            
+
             <TabsTrigger value="videos">Videos</TabsTrigger>
-            
-            
+
+
             <TabsTrigger value="playlists">Playlists</TabsTrigger>
-            <TabsTrigger value="community">Community</TabsTrigger>
+            {/* <TabsTrigger value="community">Community</TabsTrigger> */}
           </TabsList>
           <TabsContent value="videos">
             <div>
-              videos
+              {
+
+                <DisplayVideo videos={videos?.pages[0]} />
+              }
+
             </div>
           </TabsContent>
           <TabsContent value="playlists">
-            <div>
-              playlists
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 p-4">
+              {playlists?.map((playlist: any) => (
+                <PlaylistCard key={playlist._id} {...playlist} />
+              ))}
             </div>
           </TabsContent>
-          <TabsContent value="community">
+          {/* <TabsContent value="community">
             <div>
               community
             </div>
-          </TabsContent>
+          </TabsContent> */}
         </Tabs>
 
 
-        
 
-       
+
+
       </div>
     </div>
-    )
+  )
 }

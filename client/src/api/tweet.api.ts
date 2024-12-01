@@ -75,3 +75,13 @@ export const createTweet = async (content:string,tweetImage:File) => {
         throw error;
     }
 }
+
+export const getUserTweets = async (userId:string) => {
+    try {
+        const response = await API.get(`/tweet/user-tweets/${userId}`);
+        return response?.data;
+    } catch (error) {
+        console.log(error);
+        throw error;
+    }
+}

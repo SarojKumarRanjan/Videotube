@@ -11,7 +11,7 @@ const API = axios.create({
 
 export const toggleSubscribe = async (channelId:string) => {
     try {
-        const res = await API.post("/subscription/subscribe"+channelId);
+        const res = await API.post("/subscription/subscribe/"+channelId);
         const data = res.data;
         return data;
     } catch (error) {

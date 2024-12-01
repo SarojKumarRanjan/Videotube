@@ -197,11 +197,11 @@ export const getUserHistory = async() => {
         
     }
 }
-export const getUserChannelStat = async(username:string) => {
+export const getUserChannelStat = async(userId:string,guest:boolean) => {
     try {
-        const res = await API.get("/users/channel"+username);
+        const res = await API.get("/users/channel/"+userId+"?guest="+guest);
         const data = res?.data
-        return data;
+        return data?.data;
     } catch (error) {
         if (error instanceof AxiosError && error.response) {
             toast.error(error?.response?.data?.error||"error while getting user channel info")
@@ -240,10 +240,11 @@ export const updateAccountDetails = async(userDetails:userdetails) => {
 }
 
 export const updateUserAvatar = async(avatar:File) => {
-    
+    const formData = new FormData();
+    formData.append("avatar",avatar);
     
     try {
-        const res = await API.patch("/users/update-avatar",avatar);
+        const res = await API.patch("/users/update-avatar",formData);
         const data = res?.data
         return data;
     } catch (error) {
@@ -259,8 +260,10 @@ export const updateUserAvatar = async(avatar:File) => {
 }
 
 export const updateUserCoverImage = async(coverImage:File) => {
+  const formData = new FormData();
+  formData.append("coverImage",coverImage);
 try {
-    const res = await API.patch("/users/update-cover-image",coverImage);
+    const res = await API.patch("/users/update-cover-image",formData);
     const data = res?.data;
     return data;
 } catch (error) {
@@ -273,4 +276,14 @@ try {
     console.log(error);
     throw error; 
 }
+}
+
+export const changePassword = async(oldPassword:string,newPassword:string) => {
+  try {
+    const res = await API.post("/users/change-password",{currentPassword:oldPassword,newPassword});
+    const data = res?.data;
+    return data;
+  } catch (error) {
+    
+  }
 }

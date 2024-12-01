@@ -21,6 +21,7 @@ import {
   ChannelProfilePage,
   PlaylistVideo,
   Uploadpage,
+  Setting
 } from "./pages/index.ts";
 
 import { QueryClient,QueryClientProvider } from "@tanstack/react-query";
@@ -126,7 +127,15 @@ const Router = createBrowserRouter([
             <Uploadpage />
             </Authlayout>
         )
-      }
+      },
+      {
+        path: "setting",
+        element: (
+          <Authlayout auth={true}>
+            <Setting />
+          </Authlayout>
+        ),
+      },
     ],
   },
 ]);
