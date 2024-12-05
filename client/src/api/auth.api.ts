@@ -125,7 +125,7 @@ export const getCurrentUser = async () => {
 };
 
 interface registerUser{
-    username:string,
+    userName:string,
     fullName:string,
     email:string,
     password:string,
@@ -134,16 +134,17 @@ interface registerUser{
 
 }
 
-export const registerUser = async (data:registerUser):Promise<loginResponse> => {
+export const registerUser = async (data:registerUser) => {
   const formData = new FormData();
 
   
   formData.append("avatar", data.avatar);
 
-  formData.append("userName", data.username);
+  formData.append("userName", data.userName);
   formData.append("email", data.email);
   formData.append("password", data.password);
   formData.append("fullName", data.fullName);
+  formData.append("coverImage",data.coverImage as File)
   try {
     const { data } = await API.post("/user/register", formData);
     toast.success(data?.message);

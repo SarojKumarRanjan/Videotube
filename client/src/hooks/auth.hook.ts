@@ -7,7 +7,8 @@ import { login,
     updateUserAvatar,
     updateUserCoverImage,
     changePassword,
-    getUserChannelStat
+    getUserChannelStat,
+
  } from "../api/auth.api";
 
 
@@ -52,7 +53,7 @@ export const useLogin = () => {
   };
   
   interface registerUser{
-    username:string,
+    userName:string,
     fullName:string,
     email:string,
     password:string,
