@@ -105,20 +105,20 @@ if (error instanceof AxiosError && error.response) {
 };
 
 export const getCurrentUser = async () => {
-  console.log("get current user called");
+ // console.log("get current user called");
   
   try {
     const { data } = await API.get("/users/current-user");
-    console.log(data);
+   // console.log(data);
     
     return data?.data;
   } catch (error) {
     if (error instanceof AxiosError && error.response) {
-        toast.error(error?.response?.data?.error||"error getting user info")
+       // toast.error(error?.response?.data?.error||"error getting user info")
     } else {
-        toast.error("something went wrong while getting user detail")
+       // toast.error("something went wrong while getting user detail")
     }
-    console.log(error);
+   // console.log(error);
     
     throw error
   }
@@ -129,26 +129,21 @@ interface registerUser{
     fullName:string,
     email:string,
     password:string,
-    avatar:File,
-    coverImage?:File
+    avatar:FileList,
+    coverImage?:FileList | undefined
 
 }
 
-export const registerUser = async (data:registerUser) => {
-  const formData = new FormData();
+export const registerUser = async (formdata:registerUser) => {
 
   
-  formData.append("avatar", data.avatar);
-
-  formData.append("userName", data.userName);
-  formData.append("email", data.email);
-  formData.append("password", data.password);
-  formData.append("fullName", data.fullName);
-  formData.append("coverImage",data.coverImage as File)
+  
+ 
   try {
-    const { data } = await API.post("/user/register", formData);
-    toast.success(data?.message);
-    return data?.data;
+    const res = await API.post("/users/register", formdata);
+    const data = res?.data;
+    //toast.success(data?.message);
+    return data;
   } catch (error) {
     if (error instanceof AxiosError && error.response) {
         toast.error(error?.response?.data?.error|| "error while registering user");
@@ -162,7 +157,7 @@ export const registerUser = async (data:registerUser) => {
 }
 
 export const refreshAccessToken = async () => {
-  console.log("refresh access token called");
+ // console.log("refresh access token called");
   try {
     const res = await API.post("/users/refresh-token");
     const data = res.data;
@@ -170,9 +165,9 @@ export const refreshAccessToken = async () => {
     
   } catch (error) {
     if (error instanceof AxiosError && error.response) {
-        toast.error(error?.response?.data?.error||"error while refreshing access token")
+       // toast.error(error?.response?.data?.error||"error while refreshing access token")
     } else {
-        toast.error("something went wrong while refreshing access token")
+       // toast.error("something went wrong while refreshing access token")
     }
     console.log(error);
     

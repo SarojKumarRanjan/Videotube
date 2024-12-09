@@ -17,6 +17,13 @@ const addTweet = asyncHandler(async (req, res) => {
     let uploadedImage;
     if (tweetImage) {
        uploadedImage = await cloudinaryHandler(tweetImage);
+       const tweet = await Tweet.create({
+        content:content,
+        owner: userId,
+        tweetImage:uploadedImage.url,
+      }); 
+  
+      if (!tweet) throw new ApiError(500, "Failed to create tweet");
       if (!uploadedImage) {
         throw new ApiError(500, "Failed to upload image");
       }
@@ -26,14 +33,16 @@ console.log(content);
 console.log(userId);
  */
 
+const tweet = await Tweet.create({
+  content:content,
+  owner: userId,
+  
+}); 
 
-    const tweet = await Tweet.create({
-      content:content,
-      owner: userId,
-      tweetImage:uploadedImage.url,
-    }); 
+if (!tweet) throw new ApiError(500, "Failed to create tweet");
 
-    if (!tweet) throw new ApiError(500, "Failed to create tweet");
+
+   
     return res
       .status(201)
       .json(new ApiResponse(201, tweet, "Tweet created successfully"));
