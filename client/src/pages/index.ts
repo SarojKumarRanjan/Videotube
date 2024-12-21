@@ -13,6 +13,7 @@ import ChannelProfilePage from "./ChannelProfilePage";
 import PlaylistVideo from "./PlaylistVideoPage";
 import Uploadpage from "./Uploadpage";
 import Setting from "./Setting";
+import { SearchPage } from "./Search";
 
 
 
@@ -35,7 +36,8 @@ export {
     ChannelProfilePage,
     PlaylistVideo,
     Uploadpage,
-    Setting
+    Setting,
+    SearchPage
 
 
 }

@@ -1,11 +1,11 @@
-import { FC } from "react";
-import { Link } from "react-router-dom";
-import { Outlet } from "react-router-dom";
+import { FC, useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
 import { ModeToggle } from "../components/Header/ThemeChanger";
 import Profile from "../components/Header/Profile";
 import SidebarOptions from "../components/SidebarOptions";
 import { Bell, Menu, Clapperboard, Search } from "lucide-react";
 import { ScrollArea } from "../components/ui/scroll-area";
+import { Outlet } from "react-router-dom";
 
 import { Button } from "../components/ui/button";
 import {
@@ -19,17 +19,24 @@ import {
 import { Input } from "../components/ui/input";
 import { Sheet, SheetContent, SheetTrigger } from "../components/ui/sheet";
 
+
 export const HomePage: FC = () => {
-
-
-
-
-
-
-
-
+  const [search, setSearch] = useState("");
+  const navigate = useNavigate();  
 
   
+  const handleSearch = (value: string) => {
+    setSearch(value);
+  }
+
+ 
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (search.trim()) {
+      navigate(`/search?query=${search}`);  
+    }
+  };
+
   return (
     <div className="grid min-h-screen w-full md:grid-cols-[220px_1fr] lg:grid-cols-[280px_1fr]">
       <div className="hidden border-r bg-muted/40 md:block">
@@ -99,13 +106,15 @@ export const HomePage: FC = () => {
             </SheetContent>
           </Sheet>
           <div className="w-full flex-1">
-            <form>
+            <form onSubmit={handleSubmit}>  {/* Handle form submit */}
               <div className="relative">
                 <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
                 <Input
                   type="search"
                   placeholder="Search videos..."
                   className="w-full appearance-none bg-background pl-8 shadow-none md:w-2/3 lg:w-1/3"
+                  value={search}
+                  onChange={(e) => handleSearch(e.target.value)}  // Update search value on change
                 />
               </div>
             </form>
@@ -116,9 +125,7 @@ export const HomePage: FC = () => {
         </header>
         <main className="w-full">
           <ScrollArea className="h-[calc(100vh-60px)]">
-            
             <Outlet />
-            
           </ScrollArea>
         </main>
       </div>

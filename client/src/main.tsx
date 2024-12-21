@@ -21,7 +21,8 @@ import {
   ChannelProfilePage,
   PlaylistVideo,
   Uploadpage,
-  Setting
+  Setting,
+  SearchPage,
 } from "./pages/index.ts";
 
 import { QueryClient,QueryClientProvider } from "@tanstack/react-query";
@@ -136,6 +137,10 @@ const Router = createBrowserRouter([
           </Authlayout>
         ),
       },
+      {
+        path: "search",
+        element: <SearchPage />,
+      }
     ],
   },
 ]);

@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { Link } from "react-router-dom";
 import { Button } from "../components/ui/button";
 import {
@@ -66,7 +67,7 @@ export function SignupForm() {
       }
     }
     catch (error) {
-      toast.error("An error occurred. Please try again.");
+      console.error("Signup failed:", error);
     }
 
   })

@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { Card, CardContent, CardHeader, CardTitle } from "../ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "../ui/tabs";
 import { Button } from "../ui/button";
@@ -16,12 +17,13 @@ import {
   Eye,
   ThumbsUp,
   Video,
-  Search,
+  
   Trash2,
   Pencil,
 } from "lucide-react";
 import { ScrollArea } from "../ui/scroll-area";
 import { Link } from "react-router-dom";
+import { useState } from "react";
 
 import { timeAgo } from "../../lib/timeAgo";
 import DeletePopup from "./DeletePopup";
@@ -36,6 +38,9 @@ import {
 } from "../../hooks/dashboard.hook";
 
 export default function ChannelDashboard() {
+  const [videoSearch, setVideoSearch] = useState("");
+  const [playlistSearch, setPlaylistSearch] = useState("");
+
   const { data: channelStats, isLoading: channelStatsLoading } =
     useGetChannelStats();
   const { data: channelVideos, isLoading: channelVideosLoading } =
@@ -46,13 +51,18 @@ export default function ChannelDashboard() {
   const { data: yourPlaylists, isLoading: getYourPlaylistsLoading } =
     useGetYourPlaylist();
 
-  //console.log(channelStats);
-  console.log(yourPlaylists);
-
   const togglePublishHandler = async (id: string) => {
     await togglePublish(id);
-    //console.log("Toggling publish for video with id:",id);
   };
+
+  // Filter functions for videos and playlists
+  const filteredVideos = channelVideos?.filter((video: any) =>
+    video.title.toLowerCase().includes(videoSearch.toLowerCase())
+  );
+
+  const filteredPlaylists = yourPlaylists?.filter((playlist: any) =>
+    playlist.name.toLowerCase().includes(playlistSearch.toLowerCase())
+  );
 
   if (channelStatsLoading || channelVideosLoading || getYourPlaylistsLoading)
     return <div>Loading...</div>;
@@ -134,12 +144,11 @@ export default function ChannelDashboard() {
                 type="text"
                 placeholder="Search videos"
                 className="w-full"
+                value={videoSearch}
+                onChange={(e) => setVideoSearch(e.target.value)}
               />
             </div>
-            <Button type="submit" className="w-full sm:w-auto">
-              <Search className="h-4 w-4 mr-2" />
-              Search
-            </Button>
+            
           </div>
 
           <ScrollArea className="w-full">
@@ -148,12 +157,8 @@ export default function ChannelDashboard() {
                 <TableHeader>
                   <TableRow>
                     <TableHead className="min-w-[200px]">Title</TableHead>
-                    <TableHead className="hidden sm:table-cell">
-                      Views
-                    </TableHead>
-                    <TableHead className="hidden sm:table-cell">
-                      Likes
-                    </TableHead>
+                    <TableHead className="hidden sm:table-cell">Views</TableHead>
+                    <TableHead className="hidden sm:table-cell">Likes</TableHead>
                     <TableHead className="hidden md:table-cell">
                       Publish Date
                     </TableHead>
@@ -163,7 +168,7 @@ export default function ChannelDashboard() {
                   </TableRow>
                 </TableHeader>
                 <TableBody>
-                  {channelVideos.map((video: any) => (
+                  {filteredVideos.map((video: any) => (
                     <TableRow key={video._id}>
                       <TableCell className="font-medium">
                         <Link to={`/watch/${video._id}`}>{video.title}</Link>
@@ -180,12 +185,9 @@ export default function ChannelDashboard() {
                       <TableCell>
                         <Switch
                           checked={video.isPublished}
-                          onCheckedChange={() =>
-                            togglePublishHandler(video._id)
-                          }
+                          onCheckedChange={() => togglePublishHandler(video._id)}
                         />
                       </TableCell>
-
                       <TableCell>
                         <UpdateVideoDetails formData={video}>
                           <Button variant="outline" size="sm">
@@ -222,12 +224,11 @@ export default function ChannelDashboard() {
                 type="text"
                 placeholder="Search playlists"
                 className="w-full"
+                value={playlistSearch}
+                onChange={(e) => setPlaylistSearch(e.target.value)}
               />
             </div>
-            <Button type="submit" className="w-full sm:w-auto">
-              <Search className="h-4 w-4 mr-2" />
-              Search
-            </Button>
+            
           </div>
 
           <ScrollArea className="w-full">
@@ -246,7 +247,7 @@ export default function ChannelDashboard() {
                   </TableRow>
                 </TableHeader>
                 <TableBody>
-                  {yourPlaylists.map((playlist: any) => (
+                  {filteredPlaylists.map((playlist: any) => (
                     <TableRow key={playlist._id}>
                       <TableCell className="font-medium">
                         <Link to={`/playlist/${playlist._id}`}>

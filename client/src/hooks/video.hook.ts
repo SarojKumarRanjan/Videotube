@@ -17,20 +17,22 @@ import { useSelector } from "react-redux";
 
 
 
-export const useVideos = (userId?:string) => {  
+export const useVideos = (userId?:string,query?:string) => {  
    
 
   return useInfiniteQuery({
     
-    queryKey: ["videos"],
-    queryFn: ({ pageParam = 1}) => getAllVideo(pageParam,userId),
+    queryKey: ["videos",userId,query],
+    queryFn: ({ pageParam = 1}) => getAllVideo(pageParam,userId,query as string),
     getNextPageParam: (lastPage) => {
       if (!lastPage.hasNextPage) return undefined;
       return lastPage.nextPage;
     },
-    staleTime: 1000, 
+    staleTime: 1000*60,//1min 
     initialPageParam: 1,
-    retry:0
+    retry:0,
+    refetchOnWindowFocus: false,
+    
   });
 };
 

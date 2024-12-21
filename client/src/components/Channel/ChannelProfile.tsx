@@ -22,7 +22,7 @@ export default function ChannelProfile() {
   const { data: playlists, } = useGetUserPlaylist(channelId as string);
   //console.log(playlists);
 
-  const { data: videos } = useVideos(channelId as string);
+  const { data: videos } = useVideos(channelId as string,undefined);
   //console.log(videos);
 
   const { data: userChannelStat, isLoading: userChannelStatLoading } = useGetUserChannelStat(channelId as string,guest);
