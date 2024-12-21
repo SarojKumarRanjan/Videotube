@@ -181,24 +181,41 @@ console.log(videoLocalPath);
 
 const getAllVideo = asyncHandler(async (req, res) => {
   try {
-    const { page = 1, limit = 15, query, sortBy, sortType, userId } = req?.query;
+    const { page = 1, limit = 15,  sortBy, sortType, userId } = req?.query;
+
+    let { query } = req?.query;
+
     
-   // console.log("Query parameters:", { page, limit, query, sortBy, sortType, userId });
+
+    query = query?.trim();
+
+    query = query?.replace(/[^a-zA-Z0-9 ]/g, "");
 
     const pipeLine = [];
 
-    // TODO: search query based on the title and description of the video by creating an index from the mongodb atlas
+    // **Search Query: Match title and description** (Make this the first stage)
+    if (query) {
+      pipeLine.push({
+        $match: {
+          $text: { $search: query },
+        },
+      });
 
+      // Add score field for sorting by relevance (this comes immediately after $match)
+      pipeLine.push({
+        $addFields: {
+          relevanceScore: { $meta: "textScore" },
+        },
+      });
+    }
+
+    // Filter by userId if provided (this comes after the $text match)
     if (userId) {
-     // console.log("Filtering by userId:", userId);
-
       if (!isValidObjectId(userId)) {
         throw new ApiError(400, "Invalid user id");
       }
-    
+
       const user = await User.findById(userId);
-      //console.log("User found:", user ? "Yes" : "No");
-    
       if (!user) {
         throw new ApiError(400, "User not found");
       }
@@ -206,19 +223,20 @@ const getAllVideo = asyncHandler(async (req, res) => {
       pipeLine.push({ $match: { owner: new mongoose.Types.ObjectId(userId) } });
     }
 
-    // Stage 1: Match published videos
+    // Match only published videos
     pipeLine.push({ $match: { isPublished: true } });
-    //console.log("Pipeline after isPublished match:", pipeLine);
 
-    // Stage 2: Sorting
+    // Sorting
     if (sortBy && sortType) {
       pipeLine.push({ $sort: { [sortBy]: sortType === "desc" ? -1 : 1 } });
+    } else if (query) {
+      // If searching by text, sort by relevance score
+      pipeLine.push({ $sort: { relevanceScore: -1 } });
     } else {
       pipeLine.push({ $sort: { createdAt: -1 } });
     }
-   // console.log("Pipeline after sorting:", pipeLine);
 
-    // Stage 3: Lookup user details
+    // Lookup user details
     pipeLine.push(
       {
         $lookup: {
@@ -231,40 +249,38 @@ const getAllVideo = asyncHandler(async (req, res) => {
               $project: {
                 _id: 1,
                 userName: 1,
-                avatar: 1
-              }
-            }
-          ]
-        }
+                avatar: 1,
+              },
+            },
+          ],
+        },
       },
       {
         $unwind: "$ownerDetails",
       }
     );
-   // console.log("Pipeline after user lookup:", pipeLine);
-
-    // Execute pipeline without pagination to check intermediate results
-    const intermediateResults = await Video.aggregate(pipeLine);
-    //console.log("Intermediate results (first 5):", intermediateResults.slice(0, 5));
 
     const videoAggregator = Video.aggregate(pipeLine);
 
     const options = {
       page: parseInt(page),
       limit: parseInt(limit),
-    }
-
-    //console.log("Pagination options:", options);
+    };
 
     const videos = await Video.aggregatePaginate(videoAggregator, options);
-   // console.log("Final paginated results (first 5):", videos.docs.slice(0, 5));
 
-    return res.status(200).json(new ApiResponse(200, videos, "videos fetched successfully"));
+    return res
+      .status(200)
+      .json(new ApiResponse(200, videos, "Videos fetched successfully"));
   } catch (error) {
     console.error("Error in getAllVideo:", error);
-    throw new ApiError(500, "An error occurred while fetching videos based on query parameters");
+    throw new ApiError(
+      500,
+      "An error occurred while fetching videos based on query parameters"
+    );
   }
 });
+
 
 
 /* 
