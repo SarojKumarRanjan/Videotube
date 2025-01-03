@@ -1,4 +1,4 @@
-import ChannelProfile from "../components/Channel/ChannelProfile"
+import ChannelProfile from "../components/Channel/ChannelProfile";
 
 function ChannelProfilePage() {
   return (

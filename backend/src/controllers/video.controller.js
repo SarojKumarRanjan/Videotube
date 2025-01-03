@@ -183,7 +183,11 @@ const getAllVideo = asyncHandler(async (req, res) => {
   try {
     const { page = 1, limit = 15,  sortBy, sortType, userId } = req?.query;
 
+   // console.log("Query:", req?.query);
+    
+
     let { query } = req?.query;
+
 
     
 
