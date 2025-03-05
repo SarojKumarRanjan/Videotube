@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "TSC_COMPILE_ON_ERROR=true tsc -b && vite build --ignore-errors",
+    "build": " tsc -b && vite build ",
     "lint": "eslint .",
     "preview": "vite preview"
   },

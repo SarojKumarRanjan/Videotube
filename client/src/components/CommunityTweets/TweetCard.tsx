@@ -4,7 +4,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 import { Button } from "../ui/button";
 import { Card, CardContent, CardFooter, CardHeader } from "../ui/card";
 import { Input } from "../ui/input";
-import { ThumbsUp, MessageSquare, MoreVertical } from "lucide-react";
+import { ThumbsUp,  MoreVertical } from "lucide-react";
 import { useTweetLike } from "../../hooks/like.hook";
 import toast from "react-hot-toast";
 import { useDeleteTweet,useUpdateTweet } from "../../hooks/tweet.hook";
@@ -59,7 +59,7 @@ export default function TweetCard({
   content,
   image,
   likes,
-  comments,
+  
   timestamp,
   _id,
   ownerId,

@@ -125,12 +125,12 @@ export const getCurrentUser = async () => {
 };
 
 interface registerUser{
-    userName:string,
-    fullName:string,
-    email:string,
-    password:string,
-    avatar:FileList,
-    coverImage?:FileList | undefined
+  userName:string,
+  fullName:string,
+  email:string,
+  password:string,
+  avatar:File,
+  coverImage?:File
 
 }
 
