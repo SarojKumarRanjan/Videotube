@@ -157,6 +157,9 @@ createRoot(document.getElementById("root")!).render(
       <Toaster
   position="top-right"
   reverseOrder={true}
+  toastOptions={{
+    duration: 2000,
+  }}
 />
         <RouterProvider router={Router} />
       </Provider>

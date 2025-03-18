@@ -1,29 +1,36 @@
-version: "3.8"
+# docker-compose.yml
+version: '3.8'
 
 services:
+  frontend:
+    build: ./client
+    container_name: frontend
+    networks:
+      - app-network
+    expose:
+      - "5173"
+
   backend:
     build: ./backend
-    ports:
-      - "8000:8000"
-    env_file:
-      - ./backend/.env
-    restart: always
-
-  client:
-    build: ./client
-    ports:
-      - "5173:80"
-    depends_on:
-      - backend
-    restart: always
+    container_name: backend
+    networks:
+      - app-network
+    expose:
+      - "8000"
 
   nginx:
-    image: nginx:latest
+    image: nginx:alpine
+    container_name: nginx
     ports:
       - "80:80"
     volumes:
-      - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./nginx/nginx.conf:/etc/nginx/conf.d/default.conf
+    networks:
+      - app-network
     depends_on:
-      - client
+      - frontend
       - backend
-    restart: always
+
+networks:
+  app-network:
+    driver: bridge

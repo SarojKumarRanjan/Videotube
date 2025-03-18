@@ -14,10 +14,12 @@ COPY . .
 # Build the React app
 RUN npm run build
 
-# Use Nginx for serving static files
-FROM nginx:alpine
-COPY --from=builder /app/dist /usr/share/nginx/html
+FROM node:18-alpine
+RUN npm install -g serve
 
-# Expose port
-EXPOSE 80
-CMD ["nginx", "-g", "daemon off;"]
+WORKDIR /app
+COPY --from=builder /app/dist ./dist
+
+EXPOSE 5173
+
+CMD ["serve", "-s", "dist", "-l", "5173"]

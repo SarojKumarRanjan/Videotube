@@ -6,9 +6,11 @@ import { LIMIT_DATA } from "./constants.js";
 
 const app = express();
 
+const whitelist = ["http://localhost:80", "http://localhost:5173","http://65.0.218.135/","http://65.0.218.135","https://65.0.218.135","https://65.0.218.135/","http://video.sarojranjan.me","https://video.sarojranjan.me/","https://www.video.sarojranjan.me","http://www.video.sarojranjan.me"]
+
 app.use(
   cors({
-    origin: process.env.CORS_ORIGIN,
+    origin:whitelist,
     credentials: true,
   })
 );

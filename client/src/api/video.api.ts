@@ -29,10 +29,10 @@ interface updateVideoDetails{
 
 export const getAllVideo = async (pageParam:number,userId?:string,query?:string) => {
   try {
-    const res = await API.get("/video/get-all-videos?page="+pageParam+"&limit="+18+(userId ? "&userId="+userId : "")+(query ? "&query="+query : ""));
+    const res = await API.get("/video/get-all-videos?page="+pageParam+"&limit="+30+(userId ? "&userId="+userId : "")+(query ? "&query="+query : ""));
     const data = res.data;
 
-    console.log(data);
+    //console.log(data);
     
     return data?.data?.docs;
   } catch (error) {

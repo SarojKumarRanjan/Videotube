@@ -16,7 +16,7 @@ dbconnect()
       throw err;
     });
 
-    app.listen(process.env.PORT || 8000, () => {
+    app.listen(process.env.PORT || 8000, '0.0.0.0', () => {
       console.log(`SERVER RUNNING ON PORT ${process.env.PORT}`);
     });
   })
