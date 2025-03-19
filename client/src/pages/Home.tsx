@@ -8,13 +8,13 @@ import { ScrollArea } from "../components/ui/scroll-area";
 import { Outlet } from "react-router-dom";
 
 import { Button } from "../components/ui/button";
-import {
+/* import {
   Card,
   CardContent,
   CardDescription,
   CardHeader,
   CardTitle,
-} from "../components/ui/card";
+} from "../components/ui/card"; */
 
 import { Input } from "../components/ui/input";
 import { Sheet, SheetContent, SheetTrigger } from "../components/ui/sheet";
@@ -87,7 +87,7 @@ export const HomePage: FC = () => {
             </SheetTrigger>
             <SheetContent side="left" className="flex flex-col">
               <SidebarOptions />
-              <div className="mt-auto">
+              {/* <div className="mt-auto">
                 <Card>
                   <CardHeader>
                     <CardTitle>Upgrade to Pro</CardTitle>
@@ -102,7 +102,7 @@ export const HomePage: FC = () => {
                     </Button>
                   </CardContent>
                 </Card>
-              </div>
+              </div> */}
             </SheetContent>
           </Sheet>
           <div className="w-full flex-1">
