@@ -3,18 +3,16 @@ import { Link, useNavigate } from "react-router-dom";
 import { ModeToggle } from "../components/Header/ThemeChanger";
 import Profile from "../components/Header/Profile";
 import SidebarOptions from "../components/SidebarOptions";
-import { Bell, Menu, Clapperboard, Search } from "lucide-react";
+import { Bell, Menu, Clapperboard, Search,GithubIcon } from "lucide-react";
 import { ScrollArea } from "../components/ui/scroll-area";
 import { Outlet } from "react-router-dom";
 
 import { Button } from "../components/ui/button";
-/* import {
+ import {
   Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "../components/ui/card"; */
+  CardContent
+ 
+} from "../components/ui/card"; 
 
 import { Input } from "../components/ui/input";
 import { Sheet, SheetContent, SheetTrigger } from "../components/ui/sheet";
@@ -54,22 +52,25 @@ export const HomePage: FC = () => {
           <div className="flex-1">
             <SidebarOptions />
           </div>
-          {/* <div className="mt-auto p-4">
+           <div className="mt-auto p-4">
             <Card x-chunk="dashboard-02-chunk-0">
-              <CardHeader className="p-2 pt-0 md:p-4">
+              {/* <CardHeader className="p-2 pt-0 md:p-4">
                 <CardTitle>Upgrade to Pro</CardTitle>
                 <CardDescription>
                   Unlock all features and get unlimited access to our support
                   team.
                 </CardDescription>
-              </CardHeader>
+              </CardHeader> */}
               <CardContent className="p-2 pt-0 md:p-4 md:pt-0">
+                <Link to="https://github.com/SarojKumarRanjan/Videotube">
                 <Button size="sm" className="w-full">
-                  Upgrade
+                  <GithubIcon className="h-4 w-4 mr-2" />
+                  Github
                 </Button>
+                </Link>
               </CardContent>
             </Card>
-          </div> */}
+          </div> 
         </div>
       </div>
       <div className="flex flex-col">
@@ -87,22 +88,25 @@ export const HomePage: FC = () => {
             </SheetTrigger>
             <SheetContent side="left" className="flex flex-col">
               <SidebarOptions />
-              {/* <div className="mt-auto">
+               <div className="mt-auto">
                 <Card>
-                  <CardHeader>
+                  {/* <CardHeader>
                     <CardTitle>Upgrade to Pro</CardTitle>
                     <CardDescription>
                       Unlock all features and get unlimited access to our
                       support team.
                     </CardDescription>
-                  </CardHeader>
+                  </CardHeader> */}
                   <CardContent>
-                    <Button size="sm" className="w-full">
-                      Upgrade
-                    </Button>
+                  <Link to="https://github.com/SarojKumarRanjan/Videotube">
+                <Button size="sm" className="w-full">
+                  <GithubIcon className="h-4 w-4 mr-2" />
+                  Github
+                </Button>
+                </Link>
                   </CardContent>
                 </Card>
-              </div> */}
+              </div> 
             </SheetContent>
           </Sheet>
           <div className="w-full flex-1">

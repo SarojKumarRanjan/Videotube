@@ -11,7 +11,7 @@ const API = axios.create({
 API.interceptors.response.use(
   (response) => response,
   async (error) => {
-    console.log("error occured", error);
+    //console.log("error occured", error);
     const originalRequest = error.config;
 
     if (
@@ -20,9 +20,9 @@ API.interceptors.response.use(
     ) {
       originalRequest._retry = true;
       try {
-        console.log("this refresh access token called");
+        //console.log("this refresh access token called");
         const { accessToken } = await refreshAccessToken();
-        console.log("new access token", accessToken);
+        //console.log("new access token", accessToken);
 
         API.defaults.headers.common["Authorization"] = `Bearer ${accessToken}`;
         originalRequest.headers["Authorization"] = `Bearer ${accessToken}`;

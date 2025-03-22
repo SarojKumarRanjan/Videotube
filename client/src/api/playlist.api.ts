@@ -79,10 +79,10 @@ export const getPlaylistById = async (playlistId:string) => {
         return data?.data;
     } catch (error) {
         if (error instanceof AxiosError && error.response) {
-        toast.error(
-            error.response.data?.error ||
-            "Something went wrong while getting playlist"
-        );
+       // toast.error(
+          //  error.response.data?.error ||
+          //  "Something went wrong while getting playlist"
+       // );
         } else {
         toast.error("An unexpected error occurred while getting playlist");
         }
@@ -155,10 +155,10 @@ export const getYourPlaylist = async() => {
         return data?.data;
     } catch (error) {
         if (error instanceof AxiosError && error.response) {
-        toast.error(
-            error.response.data?.error ||
-            "Something went wrong while getting your playlists"
-        );
+        //toast.error(
+         //   error.response.data?.error ||
+          //  "Something went wrong while getting your playlists"
+        //);
         } else {
         toast.error("An unexpected error occurred while getting your playlists");
         }
