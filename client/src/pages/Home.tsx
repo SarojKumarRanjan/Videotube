@@ -8,11 +8,7 @@ import { ScrollArea } from "../components/ui/scroll-area";
 import { Outlet } from "react-router-dom";
 
 import { Button } from "../components/ui/button";
- import {
-  Card,
-  CardContent
  
-} from "../components/ui/card"; 
 
 import { Input } from "../components/ui/input";
 import { Sheet, SheetContent, SheetTrigger } from "../components/ui/sheet";
@@ -53,23 +49,14 @@ export const HomePage: FC = () => {
             <SidebarOptions />
           </div>
            <div className="mt-auto p-4">
-            <Card x-chunk="dashboard-02-chunk-0">
-              {/* <CardHeader className="p-2 pt-0 md:p-4">
-                <CardTitle>Upgrade to Pro</CardTitle>
-                <CardDescription>
-                  Unlock all features and get unlimited access to our support
-                  team.
-                </CardDescription>
-              </CardHeader> */}
-              <CardContent >
+           
                 <Link to="https://github.com/SarojKumarRanjan/Videotube">
                 <Button size="sm" className="w-full">
                   <GithubIcon className="h-4 w-4 mr-2" />
                   Github
                 </Button>
                 </Link>
-              </CardContent>
-            </Card>
+              
           </div> 
         </div>
       </div>
@@ -89,23 +76,14 @@ export const HomePage: FC = () => {
             <SheetContent side="left" className="flex flex-col">
               <SidebarOptions />
                <div className="mt-auto">
-                <Card>
-                  {/* <CardHeader>
-                    <CardTitle>Upgrade to Pro</CardTitle>
-                    <CardDescription>
-                      Unlock all features and get unlimited access to our
-                      support team.
-                    </CardDescription>
-                  </CardHeader> */}
-                  <CardContent>
+               
                   <Link to="https://github.com/SarojKumarRanjan/Videotube">
                 <Button size="sm" className="w-full">
                   <GithubIcon className="h-4 w-4 mr-2" />
                   Github
                 </Button>
                 </Link>
-                  </CardContent>
-                </Card>
+                 
               </div> 
             </SheetContent>
           </Sheet>

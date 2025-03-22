@@ -94,7 +94,9 @@ export function LoginForm() {
                 </p>
               )}
             </div>
-            <Button disabled={isLoading} type="submit" className="w-full">
+            <Button
+            
+            disabled={isLoading} type="submit" className="w-full">
               {isLoading ? "Logging in..." : "Login"}
             </Button>
             {isError && (
@@ -107,7 +109,7 @@ export function LoginForm() {
               loginUser({ "email":"abcd@gmail.com","password": "12345" });
 
             }}
-            variant="outline" className="w-full">
+             className="w-full">
               Login as Guest
             </Button>
           </div>
