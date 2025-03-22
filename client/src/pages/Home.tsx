@@ -61,7 +61,7 @@ export const HomePage: FC = () => {
                   team.
                 </CardDescription>
               </CardHeader> */}
-              <CardContent className="p-2 pt-0 md:p-4 md:pt-0">
+              <CardContent >
                 <Link to="https://github.com/SarojKumarRanjan/Videotube">
                 <Button size="sm" className="w-full">
                   <GithubIcon className="h-4 w-4 mr-2" />
