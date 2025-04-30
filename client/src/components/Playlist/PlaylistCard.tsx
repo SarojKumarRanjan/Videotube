@@ -112,7 +112,7 @@ const {mutateAsync:updatePlaylistDetails} = useUpdatePlaylistDetails();
           <span className="mx-1">•</span>
           <span>Duration: {formatVideoDuration(totalDuration)}</span>
         </div>
-        <Link to={`${_id}`}>
+        <Link to={`/playlist/${_id}`}>
           <div className="text-sm text-gray-500">View full playlist</div>
         </Link>
       </div>
