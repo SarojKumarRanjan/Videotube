@@ -108,9 +108,9 @@ const Router = createBrowserRouter([
       {
         path: "channel/:channelId",
         element: (
-          <Authlayout auth={true}>
+         
             <ChannelProfilePage />
-          </Authlayout>
+          
         ),
       },
       {
