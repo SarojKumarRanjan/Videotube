@@ -4,7 +4,7 @@ import { Link } from "react-router-dom";
 import { timeAgo } from "../../lib/timeAgo";
 import { lazy ,Suspense} from "react";
 import formatVideoDuration from "../../lib/durationFormat";
-//import lazy addtoplaylist
+
 
 const AddToPlaylist = lazy(() => import("../Playlist/AddToPlaylist"));
 
