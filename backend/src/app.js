@@ -6,14 +6,19 @@ import { LIMIT_DATA } from "./constants.js";
 
 const app = express();
 
-const whitelist = ["http://localhost:80", "http://localhost:5173","http://65.0.218.135/","http://65.0.218.135","https://65.0.218.135","https://65.0.218.135/","http://video.sarojranjan.me","https://video.sarojranjan.me/","https://www.video.sarojranjan.me","http://www.video.sarojranjan.me"]
+app.use(cors({
+  origin: "https://video.sarojranjan.me", 
+  credentials: true,                     
+}));
 
-app.use(
-  cors({
-    origin:whitelist,
-    credentials: true,
-  })
-);
+
+app.use((req, res, next) => {
+  res.header("Access-Control-Allow-Origin", "https://video.sarojranjan.me");
+  res.header("Access-Control-Allow-Credentials", "true");
+  res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept, Authorization");
+  res.header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
+  next();
+});
 
 app.use(express.json({ limit: LIMIT_DATA }));
 
