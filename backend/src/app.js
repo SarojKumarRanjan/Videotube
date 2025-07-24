@@ -7,19 +7,18 @@ import { LIMIT_DATA } from "./constants.js";
 const app = express();
 
 app.use(cors({
-  origin: "https://video.sarojranjan.me", 
-  credentials: true,                     
+  origin: [
+    "https://video.sarojranjan.me",
+    "https://www.video.sarojranjan.me",
+    "http://localhost:5173" 
+  ],
+  credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization', 'Cookie','X-Requested-With', ],
+  exposedHeaders: ['Content-Length', 'Set-Cookie'],
+  optionsSuccessStatus: 200,
+  maxAge: 86400
 }));
-
-
-app.use((req, res, next) => {
-  res.header("Access-Control-Allow-Origin", "https://video.sarojranjan.me");
-  res.header("Access-Control-Allow-Credentials", "true");
-  res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept, Authorization");
-  res.header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
-  next();
-});
-
 app.use(express.json({ limit: LIMIT_DATA }));
 
 app.use(express.urlencoded({ extended: true, limit: LIMIT_DATA }));
@@ -28,11 +27,6 @@ app.use(express.static("public"));
 
 app.use(cookieparser());
 
-
-app.use((req, res, next) => {
-  res.setHeader("Content-Type", "application/json");
-  next();
-});
 
 const errorHandler = (err,req, res, next) => {
   if (err instanceof ApiError) {
@@ -50,6 +44,14 @@ const errorHandler = (err,req, res, next) => {
   }
 };
 
+
+//logs of every request
+
+app.use((req, res, next) => {
+  console.log(`${req.method} ${req.url} - ${new Date().toISOString()}`);
+  next();
+});
+
 //routes import 
 
 import userRouter from "./routes/user.route.js"
@@ -65,6 +67,14 @@ import dashboardRouter from "./routes/dashboard.route.js"
 
 
 //routes declaration  
+
+
+app.get("/", (req, res) => {
+  res.status(200).json({
+    success: true,
+    message: "Welcome to VideoTube API",
+  });
+});
 
 app.use("/api/v1/users",userRouter)
 app.use("/api/v1/video",videoRouter)
