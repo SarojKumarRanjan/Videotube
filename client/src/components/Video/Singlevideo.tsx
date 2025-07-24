@@ -17,13 +17,14 @@ import { useVideoLike } from "../../hooks/like.hook";
 import { useToggleSubscribe } from "../../hooks/subscription.hook";
 import { toast } from "react-hot-toast";
 import { useSelector } from "react-redux";
+import Loader from "../Loader";
 
 const AddToPlaylist = lazy(() => import("../Playlist/AddToPlaylist"));
 
 export default function SingleVideo() {
   const { videoId } = useParams<{ videoId: string }>();
 
-  const { user, authStatus } = useSelector((state: any) => state.auth);
+  const { user, authStatus } = useSelector((state:any) => state.auth);
   const guest = !authStatus;
 
   const { mutateAsync: likeVideo } = useVideoLike();
@@ -52,7 +53,9 @@ export default function SingleVideo() {
     toast.success(res?.message);
   };
 
-  if (isLoading) return <div>Loading...</div>;
+  if (isLoading) return <div>
+    <Loader text="Loading video..." />
+  </div>;
   if (isError) return <div>{error?.message}</div>;
 
   //console.log(video);

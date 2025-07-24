@@ -13,10 +13,10 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({ videoUrl, thumbnailUrl,videoI
     <div style={{ position: 'relative', width: '100%', height: '100%' }}>
       <ReactPlayer
         url={videoUrl}
-        controls={true} // Enables built-in controls
+        controls={true} 
         width="100%"
         height="100%"
-        light={thumbnailUrl} // Shows the thumbnail until playback starts
+        light={thumbnailUrl} 
         onPlay={() => {
           updateWatchHistory(videoId);
         }}

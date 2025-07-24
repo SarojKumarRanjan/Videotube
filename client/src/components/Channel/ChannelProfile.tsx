@@ -13,6 +13,7 @@ import { useGetUserChannelStat } from "../../hooks/auth.hook"
 import { useSelector } from "react-redux"
 import { useToggleSubscribe } from "../../hooks/subscription.hook"
 import { toast } from "react-hot-toast"
+import Loader from "../Loader"
 
 export default function ChannelProfile() {
     const { channelId } = useParams();
@@ -39,7 +40,9 @@ export default function ChannelProfile() {
 
 
   console.log(userChannelStat);
-  if(userChannelStatLoading) return <div>Loading...</div>
+  if(userChannelStatLoading) return <div>
+    <Loader text="Loading channel profile..." />
+  </div>
 
   return (
     <div className="w-full">

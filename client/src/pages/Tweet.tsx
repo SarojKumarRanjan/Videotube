@@ -8,59 +8,7 @@ import { Button } from "../components/ui/button";
 import { useCreateTweet, useGetAllTweets } from "../hooks/tweet.hook";
 import TweetCard from "../components/CommunityTweets/TweetCard";
 import { timeAgo } from "../lib/timeAgo";
-
-const sampleComments = [
-  {
-    id: 5,
-    user: "Alice",
-    avatar: "https://images.pexels.com/photos/1563356/pexels-photo-1563356.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1",
-    content: "Great post! Really enjoyed reading this.",
-    likes: 15,
-    timestamp: "2 hours ago",
-  },
-  {
-    id: 2,
-    user: "Bob",
-    avatar: "https://images.pexels.com/photos/2176593/pexels-photo-2176593.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1",
-    content: "I agree with Alice!",
-    likes: 3,
-    timestamp: "1 hour ago",
-  },
-  {
-    id: 1,
-    user: "Alice",
-    avatar: "https://images.pexels.com/photos/1563356/pexels-photo-1563356.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1",
-    content: "Great post! Really enjoyed reading this.",
-    likes: 15,
-    timestamp: "2 hours ago",
-  },
-  {
-    id: 9,
-    user: "Bob",
-    avatar: "https://images.pexels.com/photos/2176593/pexels-photo-2176593.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1",
-    content: "I agree with Alice!",
-    likes: 3,
-    timestamp: "1 hour ago",
-  },
-  {
-    id: 45,
-    user: "Alice",
-    avatar: "https://images.pexels.com/photos/1563356/pexels-photo-1563356.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1",
-    content: "Great post! Really enjoyed reading this.",
-    likes: 15,
-    timestamp: "2 hours ago",
-  },
-  {
-    id: 63,
-    user: "Bob",
-    avatar: "https://images.pexels.com/photos/2176593/pexels-photo-2176593.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1",
-    content: "I agree with Alice!",
-    likes: 3,
-    timestamp: "1 hour ago",
-  },
-  // Add more comments as needed
-]
-
+import Loader from "../components/Loader";
 
 
 export default function Tweet() {
@@ -73,7 +21,7 @@ export default function Tweet() {
   const { data: tweets, isLoading, error, isError } = useGetAllTweets();
   const { mutateAsync: createTweet } = useCreateTweet();
 
-  console.log(tweets);
+  
   
   const addTweet = async () => {
   //@ts-ignore
@@ -86,7 +34,9 @@ export default function Tweet() {
   };
 
   if (isLoading) {
-    return <div>Loading...</div>;
+    return <div>
+      <Loader text="Loading tweets..." />
+    </div>;
   }
   if (isError) {
     return <div>{error?.message}</div>;
@@ -140,7 +90,7 @@ export default function Tweet() {
           content={tweet.content}
           image={tweet.tweetImage}
           likes={tweet.likesCount}
-          comments={sampleComments}
+          //comments={sampleComments}
           _id={tweet._id}
           ownerId={tweet?.ownerDetails?._id}
           isLiked={tweet.isLiked}

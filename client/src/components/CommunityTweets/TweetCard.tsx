@@ -31,14 +31,14 @@ import { Link } from "react-router-dom";
 
 
 
-interface Comment {
+/* interface Comment {
   id: number;
   user: string;
   avatar: string;
   content: string;
   likes: number;
   timestamp: string;
-}
+} */
 
 interface CommunityPostProps {
   author: string;
@@ -47,7 +47,7 @@ interface CommunityPostProps {
   content: string;
   image?: string;
   likes: number;
-  comments: Comment[];
+  //comments: Comment[];
   _id: string;
   ownerId: string;
   isLiked: boolean;

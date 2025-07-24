@@ -5,7 +5,7 @@ import DisplayVideo from "../components/Video/DisplayVideo";
 import { useVideos } from "../hooks/video.hook";
 import { useEffect } from "react";
 
-
+import Loader from "../components/Loader";
 
 import { useInView } from 'react-intersection-observer';
 
@@ -41,9 +41,11 @@ function Welcome() {
 
 //console.log(data?.pages[0]);
 
-if(isLoading){
+if(isLoading && !data){
   return (
-    <div>loading</div>
+    <div className="h-full w-full">
+      <Loader text="Loading Please Wait..." />
+    </div>
   )
 }
 
@@ -65,7 +67,7 @@ if(isFetchingNextPage){
 
   return (
     <div ref={ref}>
-      <DisplayVideo videos={data?.pages[0]}/>
+      <DisplayVideo isLoading={isLoading} videos={data?.pages[0]}/>
     </div>
   );
 }

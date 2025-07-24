@@ -4,6 +4,7 @@ import { useGetRecomendedVideos } from "../../hooks/video.hook";
 import { timeAgo } from "../../lib/timeAgo";
 import { Link } from "react-router-dom";
 import formatVideoDuration from "../../lib/durationFormat";
+import Loader from "../Loader";
 
 type owner = {
   _id: string;
@@ -30,10 +31,12 @@ interface Video {
 function RecomendedVideo() {
   const { videoId } = useParams<{ videoId: string }>();
   //@ts-ignore
-  const { data: recommendedVideos, error, isError, isLoading } = useGetRecomendedVideos(videoId);
+  const { data: recommendedVideos,  isError, isLoading } = useGetRecomendedVideos(videoId);
 
-  if (isLoading) return <div>Loading...</div>;
-  if (isError) return <div>{error?.message}</div>;
+  if (isLoading) return <div>
+    <Loader text="Loading recommended videos..." />
+  </div>;
+  if (isError) return <div>{"Something went wrong"}</div>;
 
   return (
     <div className="lg:w-3/12">

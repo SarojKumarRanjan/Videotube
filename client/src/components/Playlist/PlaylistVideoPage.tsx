@@ -21,6 +21,7 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "../ui/alert-dialog";
+import Loader from "../Loader";
 
 interface Video {
   _id: string;
@@ -56,7 +57,9 @@ function PlaylistVideoPage() {
   }
 
   if (isLoading) {
-    return <div>loading....</div>;
+    return <div>
+      <Loader text="Loading playlist..." />
+    </div>;
   }
 
   const handleDelete = async() => {

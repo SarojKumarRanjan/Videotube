@@ -3,6 +3,7 @@ import { ScrollArea, ScrollBar } from "../ui/scroll-area";
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 import { Link } from "react-router-dom";
 import { useGetSubscribedChannels } from "../../hooks/subscription.hook";
+import Loader from "../Loader";
 
 type Channel  = {
   _id: string;
@@ -21,7 +22,16 @@ export default function SubscriptionPage() {
   
  //console.log(subscribedChannel[0]);
   
- if(isLoading) return <div>Loading...</div>
+ if(isLoading) return <div>
+    <Loader text="Loading subscriptions..." />
+  </div>;
+  
+  if(!subscribedChannel || subscribedChannel.length === 0) return <div className="text-center mt-4">No Subscribed Channels Found</div>
+  
+  //console.log(subscribedChannel);
+  
+  
+ 
   if(isError) return <div>{error.message}</div>
   if(subscribedChannel.length === 0) return <div>No Subscribed Channels Found</div>
 

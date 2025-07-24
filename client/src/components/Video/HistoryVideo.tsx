@@ -1,6 +1,7 @@
 import DisplayVideo from "./DisplayVideo"
 
 import { useWatchHistory } from "../../hooks/video.hook";
+import Loader from "../Loader";
 
 
 export default function HistoryVideo() {
@@ -17,7 +18,7 @@ export default function HistoryVideo() {
     if(isLoading){
         return(
             <div>
-                loading....
+                <Loader text="Loading your history..." />
             </div>
         )
     }

@@ -36,6 +36,7 @@ import {
   useGetChannelStats,
   useGetChannelVideos,
 } from "../../hooks/dashboard.hook";
+import Loader from "../Loader";
 
 export default function ChannelDashboard() {
   const [videoSearch, setVideoSearch] = useState("");
@@ -65,7 +66,9 @@ export default function ChannelDashboard() {
   );
 
   if (channelStatsLoading || channelVideosLoading || getYourPlaylistsLoading)
-    return <div>Loading...</div>;
+    return <div>
+      <Loader text="Loading channel dashboard..." />
+    </div>;
 
   return (
     <div className="w-full min-h-screen p-4 space-y-8">
