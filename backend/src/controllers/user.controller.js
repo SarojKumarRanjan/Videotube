@@ -28,8 +28,7 @@ const generateAccessTokenAndrefreshToken = async (userId) => {
 const registerUser = asyncHandler(async (req, res) => {
   const { fullName, email, userName, password } = req.body;
 
-  console.log(req.body);
-  console.log(req.files);
+ 
 
   if (
     [fullName, email, userName, password].some((field) => field?.trim() === "")
@@ -78,14 +77,14 @@ const registerUser = asyncHandler(async (req, res) => {
     email,
   });
 
-  console.log(user);
+ 
   
 
   const createdUser = await User.findById(user._id).select(
     "-password -refreshToken"
   );
 
-  console.log(createdUser);
+ 
   
 
   if (!createdUser) {
@@ -135,7 +134,6 @@ const loginUser = asyncHandler(async (req, res) => {
     const { accessToken, refreshToken } =
       await generateAccessTokenAndrefreshToken(currentUser._id);
 
-      console.log("this is login time refresh token",refreshToken);
       
 
     const loggedInUser = await User.findById(currentUser._id).select([
@@ -145,6 +143,7 @@ const loginUser = asyncHandler(async (req, res) => {
 
     const options = {
       httpOnly: true,
+      SameSite: "None",
       
     };
 
@@ -182,6 +181,7 @@ const logoutUser = asyncHandler(async (req, res) => {
   );
   const options = {
     httpOnly: true,
+    SameSite: "None",
     
   };
 
@@ -212,10 +212,7 @@ const refreshAccessToken = asyncHandler(async (req, res) => {
       throw new ApiError(401, "Invalid refreshToken");
     }
 
-    console.log(`incomingRefreshToken`, incomingRefreshToken);
-    console.log(`user.refreshToken`, user.refreshToken);
-    
-    
+ 
 
     if (incomingRefreshToken != user?.refreshToken) {
       throw new ApiError(401, "Refresh token expired please login again");
@@ -223,7 +220,7 @@ const refreshAccessToken = asyncHandler(async (req, res) => {
 
     const options = {
       httpOnly: true,
-      secure: true,
+      SameSite: "None",
     };
 
     const { accessToken, refreshToken } =
