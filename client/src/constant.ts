@@ -1,3 +1,3 @@
 
 
-export const BASE_URL = "https://backend.sarojranjan.me/api/v1";
+export const BASE_URL = "https://videotube-backend-latest.onrender.com/api/v1";
