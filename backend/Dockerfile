@@ -11,7 +11,7 @@ RUN npm install
 
 
 # Copy the rest of the backend files
-COPY . .
+COPY ./backend .
 
 # Expose backend port
 EXPOSE 8000
