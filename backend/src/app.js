@@ -18,10 +18,7 @@ app.use(cors({
   exposedHeaders: ['Content-Length', 'Set-Cookie'],
   optionsSuccessStatus: 200,
   maxAge: 86400,
-  setCookie: {
-    httpOnly: true,
-    SameSite: "None",
-  },
+
 }));
 app.use(express.json({ limit: LIMIT_DATA }));
 
