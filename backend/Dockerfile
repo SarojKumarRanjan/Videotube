@@ -5,11 +5,10 @@ FROM node:20-alpine
 WORKDIR /app
 
 # Copy package.json and install dependencies
-COPY package*.json ./
+COPY ./backend/package*.json ./
 RUN npm install
 
-# Copy .env explicitly
- 
+
 
 # Copy the rest of the backend files
 COPY . .
